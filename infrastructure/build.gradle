@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group 'com.cap.admin.catalogo.infrastructure'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(project(":domain"))
+    implementation(project(":application"))
+
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.jupiter
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
