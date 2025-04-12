@@ -8,12 +8,12 @@ package domain {
 
     class AggregateRoot {
         + id: Identifier
-        + validate(handler: ValidationHandler): void
+        - validate(handler: ValidationHandler): void
     }
 
     class Entity {
         + id: Identifier
-        + validate(handler: ValidationHandler): void
+        - validate(handler: ValidationHandler): void
     }
 
     class ValidationHandler {
@@ -33,17 +33,26 @@ package domain {
     }
 
     class DomainException {
+        - errors: List<Error>
         + getErrors(): List<Error>
+        + with(error: Error): DomainException
+        + with(errors: List<Error>): DomainException
     }
 
     class Category {
-        + id: Identifier
-        + name: String
-        + description: String
-        + isActive: boolean
-        + createdAt: Instant
-        + updatedAt: Instant
-        + deletedAt: Instant
+        - name: String
+        - description: String
+        - isActive: boolean
+        - createdAt: Instant
+        - updatedAt: Instant
+        - deletedAt: Instant
+        + getId(): Identifier
+        + getName(): String
+        + getDescription(): String
+        + getIsActive(): boolean
+        + getCreatedAt(): Instant
+        + getUpdatedAt(): Instant
+        + getDeletedAt(): Instant
         + validate(handler: ValidationHandler): void
     }
 
@@ -51,11 +60,30 @@ package domain {
         + value: String
     }
 
+    class CategoryValidator {
+        + validate(category: Category): void
+    }
+
+    class NoStacktraceException {
+        + NoStacktraceException(message: String)
+        + NoStacktraceException(message: String, cause: Throwable)
+    }
+
+    class ThrowsValidationHandler {
+        + append(error: Error): ValidationHandler
+        + append(handler: ValidationHandler): ValidationHandler
+        + validate(validation: Validation): ValidationHandler
+        + getErrors(): List<Error>
+    }
+
     Entity <|-- AggregateRoot
     AggregateRoot <|-- Category
     Identifier <|-- CategoryID
     ValidationHandler <|-- Validator
-    Error <|-- DomainException
     ValueObject <|-- Identifier
+    Validator <|-- CategoryValidator
+    RuntimeException <|-- NoStacktraceException
+    NoStacktraceException <|-- DomainException
+    ValidationHandler <|.. ThrowsValidationHandler
 }
 @enduml

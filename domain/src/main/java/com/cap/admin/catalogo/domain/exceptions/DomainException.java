@@ -4,17 +4,21 @@ import com.cap.admin.catalogo.domain.validation.Error;
 
 import java.util.List;
 
-public class DomainException extends RuntimeException {
+public class DomainException extends NoStacktraceException {
 
     private final List<Error> errors;
 
-    private DomainException(final List<Error> theErrors) {
-        super("", null, true, false);
+    private DomainException(final String aMessage, final List<Error> theErrors) {
+        super(aMessage);
         this.errors = theErrors;
     }
 
+    public static DomainException with(final Error theErrors) {
+        return new DomainException(theErrors.message(), List.of(theErrors));
+    }
+
     public static DomainException with(final List<Error> theErrors) {
-        return new DomainException(theErrors);
+        return new DomainException("", theErrors);
     }
 
     public List<Error> getErrors() {
