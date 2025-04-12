@@ -1,0 +1,61 @@
+@startuml Domain
+package domain {
+    class Identifier {
+    }
+
+    class ValueObject {
+    }
+
+    class AggregateRoot {
+        + id: Identifier
+        + validate(handler: ValidationHandler): void
+    }
+
+    class Entity {
+        + id: Identifier
+        + validate(handler: ValidationHandler): void
+    }
+
+    class ValidationHandler {
+        + append(error: Error): ValidationHandler
+        + append(handler: ValidationHandler): ValidationHandler
+        + validate(validation: Validation): ValidationHandler
+        + getErrors(): List<Error>
+        + hasError(): boolean
+    }
+
+    class Validator {
+        + validate(): void
+    }
+
+    class Error {
+        + message: String
+    }
+
+    class DomainException {
+        + getErrors(): List<Error>
+    }
+
+    class Category {
+        + id: Identifier
+        + name: String
+        + description: String
+        + isActive: boolean
+        + createdAt: Instant
+        + updatedAt: Instant
+        + deletedAt: Instant
+        + validate(handler: ValidationHandler): void
+    }
+
+    class CategoryID {
+        + value: String
+    }
+
+    Entity <|-- AggregateRoot
+    AggregateRoot <|-- Category
+    Identifier <|-- CategoryID
+    ValidationHandler <|-- Validator
+    Error <|-- DomainException
+    ValueObject <|-- Identifier
+}
+@enduml
