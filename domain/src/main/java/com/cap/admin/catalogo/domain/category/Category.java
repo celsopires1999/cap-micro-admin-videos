@@ -22,8 +22,8 @@ public class Category extends AggregateRoot<CategoryID> {
             final Instant aUpdateDate,
             final Instant aDeleteDate) {
         super(anId);
-        this.name = aName;
-        this.description = aDescription;
+        this.name = aName != null ? aName.trim() : null;
+        this.description = aDescription!= null ? aDescription.trim(): null;
         this.active = isActive;
         this.createdAt = aCreationDate;
         this.updatedAt = aUpdateDate;
@@ -33,7 +33,9 @@ public class Category extends AggregateRoot<CategoryID> {
     public static Category newCategory(final String aName, final String aDescription, final boolean isActive) {
         final var id = CategoryID.unique();
         final var now = Instant.now();
-        return new Category(id, aName, aDescription, isActive, now, now, null);
+        // return new Category(id, aName, aDescription, isActive, now, now, null);
+        final var deletedAt = isActive ? null : now;
+        return new Category(id, aName, aDescription, isActive, now, now, deletedAt);
     }
 
     public CategoryID getId() {
