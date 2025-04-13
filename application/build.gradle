@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":domain"))
 
     testImplementation libs.junit.jupiter
+    testImplementation libs.mockito
     testRuntimeOnly libs.junit.jupiter
 }
 
