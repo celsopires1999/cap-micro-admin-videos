@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import com.cap.admin.catalogo.domain.category.Category;
 import com.cap.admin.catalogo.domain.category.CategoryGateway;
-import com.cap.admin.catalogo.domain.validation.handler.ThrowsValidationHandler;
+import com.cap.admin.catalogo.domain.validation.handler.Notification;
 
 public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
 
@@ -20,8 +20,14 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
         final var aDescription = aCommand.description();
         final var isActive = aCommand.isActive();
 
+        final var notification = Notification.create();
+                
         final var aCategory = Category.newCategory(aName, aDescription, isActive);
-        aCategory.validate(new ThrowsValidationHandler());
+        aCategory.validate(notification);
+
+        if (notification.hasError()) {
+            //
+        }
 
         return CreateCategoryOutput.from(
                 this.categoryGateway.create(aCategory));
