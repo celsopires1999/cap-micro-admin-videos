@@ -1,0 +1,19 @@
+FROM ubuntu:24.10
+
+RUN apt update && \
+    apt install -y curl zip gpg gnupg gpg-agent socat git 
+
+COPY .docker/start.sh /
+RUN chmod +x start.sh
+
+RUN userdel -r ubuntu && useradd -m -u 1000 dev
+
+USER dev
+
+WORKDIR /home/dev/app
+
+RUN curl -s "https://get.sdkman.io" | bash 
+
+RUN bash -c "source /home/dev/.sdkman/bin/sdkman-init.sh && sdk install java 21.0.2-open"
+
+CMD ["/start.sh"]
