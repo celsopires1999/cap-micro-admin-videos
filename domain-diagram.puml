@@ -54,6 +54,9 @@ package domain {
         + getUpdatedAt(): Instant
         + getDeletedAt(): Instant
         + validate(handler: ValidationHandler): void
+        + activate(): Category
+        + deactivate(): Category
+        + update(aName: String, aDescription: String, isActive: boolean): Category
     }
 
     class CategoryID {
@@ -76,6 +79,29 @@ package domain {
         + getErrors(): List<Error>
     }
 
+    class CategorySearchQuery {
+        + page: int
+        + perPage: int
+        + terms: String
+        + sort: String
+        + direction: String
+    }
+
+    class Pagination<T> {
+        + currentPage: int
+        + perPage: int
+        + total: long
+        + items: List<T>
+    }
+
+    class CategoryGateway {
+        + create(aCategory: Category): Category
+        + deleteById(anId: CategoryID): void
+        + findById(anId: CategoryID): Optional<Category>
+        + update(aCategory: Category): Category
+        + findAll(aQuery: CategorySearchQuery): Pagination<Category>
+    }
+
     Entity <|-- AggregateRoot
     AggregateRoot <|-- Category
     Identifier <|-- CategoryID
@@ -85,5 +111,7 @@ package domain {
     RuntimeException <|-- NoStacktraceException
     NoStacktraceException <|-- DomainException
     ValidationHandler <|.. ThrowsValidationHandler
+    CategorySearchQuery <|.. CategoryGateway
+    Pagination <|.. CategoryGateway
 }
 @enduml
