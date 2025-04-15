@@ -1,10 +1,15 @@
 package com.cap.admin.catalogo.infrastructure;
 
-import com.cap.admin.catalogo.application.UseCase;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.cap.admin.catalogo.infrastructure.configuration.WebServerConfig;
+
+@SpringBootApplication
 public class Main {
+
     public static void main(String[] args) {
         System.out.println("Hello world!");
-        System.out.println(new UseCase().execute());
+        SpringApplication.run(WebServerConfig.class, args);
     }
 }

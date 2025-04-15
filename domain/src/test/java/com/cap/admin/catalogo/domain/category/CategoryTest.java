@@ -10,8 +10,8 @@ public class CategoryTest {
 
     @Test
     public void givenAValidParams_whenCallNewCategory_thenInstantiateACategory() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedName = "Movies";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = true;
 
         final var actualCategory =
@@ -32,7 +32,7 @@ public class CategoryTest {
         final String expectedName = null;
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "'name' should not be null";
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = true;
 
         final var actualCategory =
@@ -47,10 +47,10 @@ public class CategoryTest {
 
     @Test
     public void givenAnInvalidNameLengthLessThan3_whenCallNewCategoryAndValidate_thenShouldReceiveError() {
-        final var expectedName = "Fi ";
+        final var expectedName = "Mo ";
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "'name' must be between 3 and 255 characters";
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = true;
 
         final var actualCategory =
@@ -66,14 +66,14 @@ public class CategoryTest {
     @Test
     public void givenAnInvalidNameLengthMoreThan255_whenCallNewCategoryAndValidate_thenShouldReceiveError() {
         final var expectedName = """
-                Gostaria de enfatizar que o consenso sobre a necessidade de qualificação auxilia a preparação e a
-                composição das posturas dos órgãos dirigentes com relação às suas atribuições.
-                Do mesmo modo, a estrutura atual da organização apresenta tendências no sentido de aprovar a
-                manutenção das novas proposições.
+                I would like to emphasize that the consensus on the need for qualification assists in the preparation
+                and composition of the stances of the governing bodies regarding their attributions.
+                Similarly, the current structure of the organization presents trends towards approving the maintenance
+                of new propositions.
                 """;
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "'name' must be between 3 and 255 characters";
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = true;
 
         final var actualCategory =
@@ -88,7 +88,7 @@ public class CategoryTest {
 
     @Test
     public void givenAValidEmptyDescription_whenCallNewCategoryAndValidate_thenShouldReceiveOK() {
-        final var expectedName = "Filmes";
+        final var expectedName = "Movies";
         final var expectedDescription = "  ";
         final var expectedIsActive = true;
 
@@ -109,8 +109,8 @@ public class CategoryTest {
 
     @Test
     public void givenAValidFalseIsActive_whenCallNewCategoryAndValidate_thenShouldReceiveOK() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedName = "Movies";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = false;
 
         final var actualCategory =
@@ -130,8 +130,8 @@ public class CategoryTest {
 
     @Test
     public void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactivated() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedName = "Movies";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = false;
 
         final var aCategory =
@@ -160,8 +160,8 @@ public class CategoryTest {
 
     @Test
     public void givenAValidInactiveCategory_whenCallActivate_thenReturnCategoryActivated() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedName = "Movies";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = true;
 
         final var aCategory =
@@ -190,8 +190,8 @@ public class CategoryTest {
 
     @Test
     public void givenAValidCategory_whenCallUpdate_thenReturnCategoryUpdated() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedName = "Movies";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = true;
 
         final var aCategory =
@@ -217,12 +217,12 @@ public class CategoryTest {
 
     @Test
     public void givenAValidCategory_whenCallUpdateToInactive_thenReturnCategoryUpdated() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedName = "Moves";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = false;
 
         final var aCategory =
-                Category.newCategory("Film", "A categoria", true);
+                Category.newCategory("Movie", "The category", true);
 
         Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
         Assertions.assertTrue(aCategory.isActive());
@@ -247,11 +247,11 @@ public class CategoryTest {
     @Test
     public void givenAValidCategory_whenCallUpdateWithInvalidParams_thenReturnCategoryUpdated() {
         final String expectedName = null;
-        final var expectedDescription = "A categoria mais assistida";
+        final var expectedDescription = "The most watched category";
         final var expectedIsActive = true;
 
         final var aCategory =
-                Category.newCategory("Filmes", "A categoria", expectedIsActive);
+                Category.newCategory("Movies", "The category", expectedIsActive);
 
         Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
 

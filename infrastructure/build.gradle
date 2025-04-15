@@ -1,9 +1,17 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '3.4.4'
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 group 'com.cap.admin.catalogo.infrastructure'
 version '1.0-SNAPSHOT'
+
+bootJar {
+    archiveFileName='application.jar'
+    destinationDirectory.set(file("${rootProject.buildDir}/libs"))
+}
 
 repositories {
     mavenCentral()
@@ -13,8 +21,15 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":application"))
 
-    testImplementation libs.junit.jupiter
-    testRuntimeOnly libs.junit.jupiter
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-undertow')
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+
+    // testImplementation libs.junit.jupiter
+    // testRuntimeOnly libs.junit.jupiter
 }
 
 test {
