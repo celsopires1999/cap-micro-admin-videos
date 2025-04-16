@@ -1,4 +1,4 @@
-package com.cap.admin.catalogo.application.create.category.create.category;
+package com.cap.admin.catalogo.application.category.create;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,8 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.cap.admin.catalogo.application.category.create.CreateCategoryCommand;
-import com.cap.admin.catalogo.application.category.create.DefaultCreateCategoryUseCase;
 import com.cap.admin.catalogo.domain.category.CategoryGateway;
 
 @ExtendWith(MockitoExtension.class)

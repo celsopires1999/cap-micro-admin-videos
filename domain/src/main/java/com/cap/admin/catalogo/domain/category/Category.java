@@ -5,7 +5,7 @@ import com.cap.admin.catalogo.domain.validation.ValidationHandler;
 
 import java.time.Instant;
 
-public class Category extends AggregateRoot<CategoryID> {
+public class Category extends AggregateRoot<CategoryID> implements Cloneable {
     private String name;
     private String description;
     private boolean active;
@@ -23,7 +23,7 @@ public class Category extends AggregateRoot<CategoryID> {
             final Instant aDeleteDate) {
         super(anId);
         this.name = aName != null ? aName.trim() : null;
-        this.description = aDescription!= null ? aDescription.trim(): null;
+        this.description = aDescription != null ? aDescription.trim() : null;
         this.active = isActive;
         this.createdAt = aCreationDate;
         this.updatedAt = aUpdateDate;
@@ -33,9 +33,19 @@ public class Category extends AggregateRoot<CategoryID> {
     public static Category newCategory(final String aName, final String aDescription, final boolean isActive) {
         final var id = CategoryID.unique();
         final var now = Instant.now();
-        // return new Category(id, aName, aDescription, isActive, now, now, null);
         final var deletedAt = isActive ? null : now;
         return new Category(id, aName, aDescription, isActive, now, now, deletedAt);
+    }
+
+    public static Category with(final Category aCategory) {
+        return new Category(
+                aCategory.getId(),
+                aCategory.getName(),
+                aCategory.getDescription(),
+                aCategory.isActive(),
+                aCategory.getCreatedAt(),
+                aCategory.getUpdatedAt(),
+                aCategory.getDeletedAt());
     }
 
     public CategoryID getId() {
@@ -91,8 +101,7 @@ public class Category extends AggregateRoot<CategoryID> {
     public Category update(
             final String aName,
             final String aDescription,
-            final boolean isActive
-    ) {
+            final boolean isActive) {
         if (isActive) {
             activate();
         } else {
@@ -102,5 +111,14 @@ public class Category extends AggregateRoot<CategoryID> {
         this.description = aDescription;
         this.updatedAt = Instant.now();
         return this;
+    }
+
+    @Override
+    public Category clone() {
+        try {
+            return (Category) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
