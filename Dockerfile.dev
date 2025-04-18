@@ -1,7 +1,7 @@
 FROM ubuntu:24.10
 
 RUN apt update && \
-    apt install -y curl zip gpg gnupg gpg-agent socat git 
+    apt install -y curl zip gpg gnupg gpg-agent socat git graphviz
 
 COPY .docker/start.sh /
 RUN chmod +x start.sh
