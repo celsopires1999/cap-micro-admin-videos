@@ -3,9 +3,9 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.dev
-        # volumes:
-        #     - .:/home/node/app
-        # ports:
-        #     - 3000:3000
-        # extra_hosts:
-        #     - host.docker.internal:host-gateway
+        volumes:
+            - .:/home/node/app
+        ports:
+            - 8080:8080
+        extra_hosts:
+            - host.docker.internal:host-gateway
