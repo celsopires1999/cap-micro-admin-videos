@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.lang.annotation.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Target(ElementType.TYPE)
@@ -28,15 +29,25 @@ public @interface MySQLGatewayTest {
 
         @Override
         public void beforeEach(final ExtensionContext context) {
-            final var repositories = SpringExtension
+            final var repositories = convertToGenericCollection(SpringExtension
                     .getApplicationContext(context)
                     .getBeansOfType(CrudRepository.class)
-                    .values();
+                    .values());
 
             cleanUp(repositories);
         }
 
-        private void cleanUp(final Collection<CrudRepository> repositories) {
+        private Collection<CrudRepository<?, ?>> convertToGenericCollection(Collection<?> rawCollection) {
+            Collection<CrudRepository<?, ?>> result = new ArrayList<>();
+            for (Object item : rawCollection) {
+                if (item instanceof CrudRepository<?, ?> crudRepository) {
+                    result.add(crudRepository);
+                }
+            }
+            return result;
+        }
+
+        private void cleanUp(final Collection<CrudRepository<?, ?>> repositories) {
             repositories.forEach(CrudRepository::deleteAll);
         }
     }
