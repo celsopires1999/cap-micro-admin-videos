@@ -4,6 +4,7 @@ import com.cap.admin.catalogo.domain.AggregateRoot;
 import com.cap.admin.catalogo.domain.validation.ValidationHandler;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Category extends AggregateRoot<CategoryID> implements Cloneable {
     private String name;
@@ -25,8 +26,8 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
         this.name = aName != null ? aName.trim() : null;
         this.description = aDescription != null ? aDescription.trim() : null;
         this.active = isActive;
-        this.createdAt = aCreationDate;
-        this.updatedAt = aUpdateDate;
+        this.createdAt = Objects.requireNonNull(aCreationDate, "'createdAt' should not be null");
+        this.updatedAt = Objects.requireNonNull(aUpdateDate, "'updatedAt' should not be null");
         this.deletedAt = aDeleteDate;
     }
 
