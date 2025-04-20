@@ -9,6 +9,7 @@ import com.cap.admin.catalogo.domain.category.CategoryGateway;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.domain.category.CategorySearchQuery;
 import com.cap.admin.catalogo.domain.pagination.Pagination;
+import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
 import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryRepository;
 
 @Service
@@ -21,8 +22,8 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Category create(Category aCategory) {
-        return null;
+    public Category create(final Category aCategory) {
+        return this.repository.save(CategoryJpaEntity.from(aCategory)).toAggregate();
     }
 
     @Override
