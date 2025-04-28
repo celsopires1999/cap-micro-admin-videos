@@ -1,6 +1,7 @@
 package com.cap.admin.catalogo.infrastructure.api;
 
 import static io.vavr.API.Right;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Objects;
@@ -22,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.cap.admin.catalogo.ControllerTest;
 import com.cap.admin.catalogo.application.category.create.CreateCategoryOutput;
 import com.cap.admin.catalogo.application.category.create.CreateCategoryUseCase;
-import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.infrastructure.category.models.CreateCategoryApiInput;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -47,7 +48,7 @@ public class CategoryAPITest {
         final var aInput = new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
 
         when(createCategoryUseCase.execute(any()))
-                .thenReturn(Right(CreateCategoryOutput.from(CategoryID.from("123"))));
+                .thenReturn(Right(CreateCategoryOutput.from("123")));
 
         final var request = post("/categories")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -55,9 +56,10 @@ public class CategoryAPITest {
 
         this.mvc.perform(request)
                 .andDo(print())
-                .andExpectAll(
-                        status().isCreated(),
-                        header().string("Location", "/categories/123"));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/categories/123"))
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.id", equalTo("123")));
 
         verify(createCategoryUseCase, times(1)).execute(argThat(cmd -> Objects.equals(expectedName, cmd.name())
                 && Objects.equals(expectedDescription, cmd.description())
