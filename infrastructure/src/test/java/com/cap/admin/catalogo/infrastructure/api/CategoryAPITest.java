@@ -34,6 +34,7 @@ import com.cap.admin.catalogo.application.category.retrieve.get.GetCategoryByIdU
 import com.cap.admin.catalogo.domain.category.Category;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.domain.exceptions.DomainException;
+import com.cap.admin.catalogo.domain.exceptions.NotFoundException;
 import com.cap.admin.catalogo.domain.validation.Error;
 import com.cap.admin.catalogo.domain.validation.handler.Notification;
 import com.cap.admin.catalogo.infrastructure.category.models.CreateCategoryApiInput;
@@ -57,8 +58,8 @@ public class CategoryAPITest {
         @Test
         public void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() throws Exception {
                 // given
-                final var expectedName = "Filmes";
-                final var expectedDescription = "A categoria mais assistida";
+                final var expectedName = "Movies";
+                final var expectedDescription = "The most watched category";
                 final var expectedIsActive = true;
 
                 final var aInput = new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
@@ -89,7 +90,7 @@ public class CategoryAPITest {
         public void givenAInvalidName_whenCallsCreateCategory_thenShouldReturnNotification() throws Exception {
                 // given
                 final String expectedName = null;
-                final var expectedDescription = "A categoria mais assistida";
+                final var expectedDescription = "The most watched category";
                 final var expectedIsActive = true;
                 final var expectedMessage = "'name' should not be null";
 
@@ -122,7 +123,7 @@ public class CategoryAPITest {
         public void givenAInvalidCommand_whenCallsCreateCategory_thenShouldReturnDomainException() throws Exception {
                 // given
                 final String expectedName = null;
-                final var expectedDescription = "A categoria mais assistida";
+                final var expectedDescription = "The most watched category";
                 final var expectedIsActive = true;
                 final var expectedMessage = "'name' should not be null";
 
@@ -155,8 +156,8 @@ public class CategoryAPITest {
         @Test
         public void givenAValidId_whenCallsGetCategory_shouldReturnCategory() throws Exception {
                 // given
-                final var expectedName = "Filmes";
-                final var expectedDescription = "A categoria mais assistida";
+                final var expectedName = "Movies";
+                final var expectedDescription = "The most watched category";
                 final var expectedIsActive = true;
 
                 final var aCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
@@ -192,14 +193,13 @@ public class CategoryAPITest {
         public void givenAInvalidId_whenCallsGetCategory_shouldReturnNotFound() throws Exception {
                 // given
                 final var expectedErrorMessage = "Category with ID 123 was not found";
-                final var expectedId = CategoryID.from("123").getValue();
+                final var expectedId = CategoryID.from("123");
 
                 when(getCategoryByIdUseCase.execute(any()))
-                                .thenThrow(DomainException.with(
-                                                new Error("Category with ID %s was not found".formatted(expectedId))));
+                                .thenThrow(NotFoundException.with(Category.class, expectedId));
 
                 // when
-                final var request = get("/categories/{id}", expectedId)
+                final var request = get("/categories/{id}", expectedId.getValue())
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON);
 

@@ -3,7 +3,7 @@ package com.cap.admin.catalogo.application.category.retrieve.get;
 import com.cap.admin.catalogo.domain.category.Category;
 import com.cap.admin.catalogo.domain.category.CategoryGateway;
 import com.cap.admin.catalogo.domain.category.CategoryID;
-import com.cap.admin.catalogo.domain.exceptions.DomainException;
+import com.cap.admin.catalogo.domain.exceptions.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,8 +34,8 @@ public class GetCategoryByIdUseCaseTest {
 
     @Test
     public void givenAValidId_whenCallsGetCategory_shouldReturnCategory() {
-        final var expectedName = "Movies";
-        final var expectedDescription = "The most watched category";
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
 
         final var aCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
@@ -65,7 +65,7 @@ public class GetCategoryByIdUseCaseTest {
                 .thenReturn(Optional.empty());
 
         final var actualException = Assertions.assertThrows(
-                DomainException.class,
+                NotFoundException.class,
                 () -> useCase.execute(expectedId.getValue()));
 
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
