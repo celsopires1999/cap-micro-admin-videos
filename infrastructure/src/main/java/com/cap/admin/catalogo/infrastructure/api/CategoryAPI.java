@@ -1,5 +1,18 @@
 package com.cap.admin.catalogo.infrastructure.api;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import com.cap.admin.catalogo.domain.pagination.Pagination;
 import com.cap.admin.catalogo.infrastructure.category.models.CategoryApiOutput;
 import com.cap.admin.catalogo.infrastructure.category.models.CreateCategoryApiInput;
@@ -9,9 +22,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(value = "categories")
 @Tag(name = "Categories")
@@ -57,4 +67,14 @@ public interface CategoryAPI {
                         @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
         })
         ResponseEntity<?> updateById(@PathVariable(name = "id") String id, @RequestBody UpdateCategoryApiInput input);
+
+        @DeleteMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+        @ResponseStatus(HttpStatus.NO_CONTENT)
+        @Operation(summary = "Delete a category by its identifier")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "204", description = "Category deleted successfully"),
+                        @ApiResponse(responseCode = "404", description = "Category was not found"),
+                        @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+        })
+        void deleteById(@PathVariable(name = "id") String id);
 }

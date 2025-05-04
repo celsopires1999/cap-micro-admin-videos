@@ -325,7 +325,7 @@ public class CategoryAPITest {
         }
 
         @Test
-        public void givenAValidId_whenCallsDeleteCategory_shouldBeOK() throws Exception {
+        public void givenAValidId_whenCallsDeleteCategory_shouldReturnNoContent() throws Exception {
                 // given
                 final var expectedId = "123";
 
@@ -341,8 +341,7 @@ public class CategoryAPITest {
                                 .andDo(print());
 
                 // then
-                response.andExpect(status().isNotFound())
-                                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE));
+                response.andExpect(status().isNoContent());
 
                 verify(deleteCategoryUseCase, times(1)).execute(eq(expectedId));
         }
