@@ -1,26 +1,32 @@
 package com.cap.admin.catalogo.e2e.category;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+
 import com.cap.admin.catalogo.E2ETest;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.infrastructure.category.models.CategoryResponse;
 import com.cap.admin.catalogo.infrastructure.category.models.CreateCategoryRequest;
 import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryRepository;
 import com.cap.admin.catalogo.infrastructure.configuration.json.Json;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @E2ETest
 @Testcontainers
@@ -32,8 +38,9 @@ public class CategoryE2ETest {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @SuppressWarnings("resource")
     @Container
-    private static final MySQLContainer MYSQL_CONTAINER = new MySQLContainer("mysql:8.0.30-debian")
+    private static final MySQLContainer<?> MYSQL_CONTAINER = new MySQLContainer<>("mysql:8.0.30-debian")
             .withPassword("123456")
             .withUsername("root")
             .withDatabaseName("adm_videos");
@@ -68,6 +75,111 @@ public class CategoryE2ETest {
         Assertions.assertNull(actualCategory.deletedAt());
     }
 
+    @Test
+    public void asACatalogAdminIShouldBeAbleToNavigateToAllCategories() throws Exception {
+        Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        givenACategory("Filmes", null, true);
+        givenACategory("Documentários", null, true);
+        givenACategory("Séries", null, true);
+
+        listCategories(0, 1)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(0)))
+                .andExpect(jsonPath("$.per_page", equalTo(1)))
+                .andExpect(jsonPath("$.total", equalTo(3)))
+                .andExpect(jsonPath("$.items", hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", equalTo("Documentários")));
+
+        listCategories(1, 1)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(1)))
+                .andExpect(jsonPath("$.per_page", equalTo(1)))
+                .andExpect(jsonPath("$.total", equalTo(3)))
+                .andExpect(jsonPath("$.items", hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", equalTo("Filmes")));
+
+        listCategories(2, 1)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(2)))
+                .andExpect(jsonPath("$.per_page", equalTo(1)))
+                .andExpect(jsonPath("$.total", equalTo(3)))
+                .andExpect(jsonPath("$.items", hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", equalTo("Séries")));
+
+        listCategories(3, 1)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(3)))
+                .andExpect(jsonPath("$.per_page", equalTo(1)))
+                .andExpect(jsonPath("$.total", equalTo(3)))
+                .andExpect(jsonPath("$.items", hasSize(0)));
+    }
+
+    @Test
+    public void asACatalogAdminIShouldBeAbleToSearchBetweenAllCategories() throws Exception {
+        Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        givenACategory("Filmes", null, true);
+        givenACategory("Documentários", null, true);
+        givenACategory("Séries", null, true);
+
+        listCategories(0, 1, "fil")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(0)))
+                .andExpect(jsonPath("$.per_page", equalTo(1)))
+                .andExpect(jsonPath("$.total", equalTo(1)))
+                .andExpect(jsonPath("$.items", hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", equalTo("Filmes")));
+    }
+
+    @Test
+    public void asACatalogAdminIShouldBeAbleToSortAllCategoriesByDescriptionDesc() throws Exception {
+        Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        givenACategory("Filmes", "C", true);
+        givenACategory("Documentários", "Z", true);
+        givenACategory("Séries", "A", true);
+
+        listCategories(0, 3, "", "description", "desc")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(0)))
+                .andExpect(jsonPath("$.per_page", equalTo(3)))
+                .andExpect(jsonPath("$.total", equalTo(3)))
+                .andExpect(jsonPath("$.items", hasSize(3)))
+                .andExpect(jsonPath("$.items[0].name", equalTo("Documentários")))
+                .andExpect(jsonPath("$.items[1].name", equalTo("Filmes")))
+                .andExpect(jsonPath("$.items[2].name", equalTo("Séries")));
+    }
+
+    private ResultActions listCategories(final int page, final int perPage) throws Exception {
+        return listCategories(page, perPage, "", "", "");
+    }
+
+    private ResultActions listCategories(final int page, final int perPage, final String search) throws Exception {
+        return listCategories(page, perPage, search, "", "");
+    }
+
+    private ResultActions listCategories(
+            final int page,
+            final int perPage,
+            final String search,
+            final String sort,
+            final String direction) throws Exception {
+        final var aRequest = get("/categories")
+                .queryParam("page", String.valueOf(page))
+                .queryParam("perPage", String.valueOf(perPage))
+                .queryParam("search", search)
+                .queryParam("sort", sort)
+                .queryParam("dir", direction)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        return this.mvc.perform(aRequest);
+    }
+
     private CategoryID givenACategory(final String aName, final String aDescription, final boolean isActive)
             throws Exception {
         final var aRequestBody = new CreateCategoryRequest(aName, aDescription, isActive);
@@ -76,11 +188,18 @@ public class CategoryE2ETest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Json.writeValueAsString(aRequestBody));
 
-        final var actualId = this.mvc.perform(aRequest)
+        // final var actualId = this.mvc.perform(aRequest)
+        // .andExpect(status().isCreated())
+        // .andReturn()
+        // .getResponse().getHeader("Location")
+        // .replace("/categories/", "");
+
+        final var actualId = Optional.ofNullable(this.mvc.perform(aRequest)
                 .andExpect(status().isCreated())
                 .andReturn()
-                .getResponse().getHeader("Location")
-                .replace("/categories/", "");
+                .getResponse().getHeader("Location"))
+                .map(header -> header.replace("/categories/", ""))
+                .orElse(null);
 
         return CategoryID.from(actualId);
     }
