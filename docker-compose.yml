@@ -4,7 +4,8 @@ services:
             context: .
             dockerfile: Dockerfile.dev
         volumes:
-            - .:/home/node/app
+            - .:/home/dev/app
+            - /var/run/docker.sock:/var/run/docker.sock
         ports:
             - 8080:8080
         extra_hosts:

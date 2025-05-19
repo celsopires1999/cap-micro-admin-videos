@@ -1,0 +1,9 @@
+logging:
+  level:
+    ROOT: info
+
+mysql:
+  username: ${mysql.username}
+  password: ${mysql.password}
+  schema: ${mysql.database}
+  url: ${mysql.host}:${mysql.port}

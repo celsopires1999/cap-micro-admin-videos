@@ -1,12 +1,15 @@
 FROM ubuntu:24.10
 
 RUN apt update && \
-    apt install -y curl zip gpg gnupg gpg-agent socat git graphviz
+    apt install -y curl zip gpg gnupg gpg-agent socat git graphviz docker.io
 
 COPY .docker/start.sh /
 RUN chmod +x start.sh
 
-RUN userdel -r ubuntu && useradd -m -u 1000 dev
+RUN userdel -r ubuntu && useradd -m -u 1000 dev && \
+    usermod -aG docker dev
+
+RUN groupadd -g 989 dockerhost || true && usermod -aG 989 dev
 
 USER dev
 

@@ -37,7 +37,8 @@
 				"GitHub.vscode-pull-request-github",
 				"eamodio.gitlens",
 				"humao.rest-client",
-				"cweijan.vscode-postgresql-client2"
+				"cweijan.vscode-postgresql-client2",
+				"codeium.codeium"
 			]
 		}
 	}
