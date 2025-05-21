@@ -1,0 +1,42 @@
+## valid uuid = b8ee6449-b662-4245-9f12-430dfb74df6c
+@jwtToken = xxx
+### 
+# @name createCategory
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Category 1",
+    "description": "Description 1"
+}
+
+###
+
+@categoryId = {{createCategory.response.body.id}}
+
+###
+GET http://localhost:8080/api/categories
+Authorization: Bearer {{jwtToken}}
+
+###
+GET http://localhost:8080/api/categories/{{categoryId}}
+Authorization: Bearer {{jwtToken}}
+
+###
+# @name updateCategory
+PUT http://localhost:8080/api/categories/{{categoryId}}
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Category 1 Updated",
+    "description": "Description 1 Updated",
+    "is_active": true
+}
+
+
+###
+# @name deleteCategory
+DELETE http://localhost:8080/api/categories/{{categoryId}}
+Authorization: Bearer {{jwtToken}}
