@@ -1,5 +1,6 @@
 package com.cap.admin.catalogo.domain.category;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.cap.admin.catalogo.domain.pagination.Pagination;
@@ -15,5 +16,6 @@ public interface CategoryGateway {
     Category update(Category aCategory);
 
     Pagination<Category> findAll(CategorySearchQuery aQuery);
-    
+
+    List<CategoryID> existsByIds(Iterable<CategoryID> ids);
 }

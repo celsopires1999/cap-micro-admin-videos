@@ -2,6 +2,8 @@ package com.cap.admin.catalogo.infrastructure.category;
 
 import static com.cap.admin.catalogo.infrastructure.utils.SpecificationUtils.like;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
@@ -77,6 +79,12 @@ public class CategoryMySQLGateway implements CategoryGateway {
                 pageResult.getSize(),
                 pageResult.getTotalElements(),
                 pageResult.map(CategoryJpaEntity::toAggregate).toList());
+    }
+
+    @Override
+    public List<CategoryID> existsByIds(final Iterable<CategoryID> ids) {
+        // TODO: Implementar quando chegar na camada de infraestrutura de Genre.
+        return Collections.emptyList();
     }
 
     private Category save(final Category aCategory) {

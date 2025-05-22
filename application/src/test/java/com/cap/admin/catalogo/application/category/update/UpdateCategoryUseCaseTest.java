@@ -7,11 +7,11 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,13 +19,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.cap.admin.catalogo.application.UseCaseTest;
 import com.cap.admin.catalogo.domain.category.Category;
 import com.cap.admin.catalogo.domain.category.CategoryGateway;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.domain.exceptions.NotFoundException;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdateCategoryUseCaseTest {
+public class UpdateCategoryUseCaseTest extends UseCaseTest {
 
         @InjectMocks
         private DefaultUpdateCategoryUseCase useCase;
@@ -33,9 +34,9 @@ public class UpdateCategoryUseCaseTest {
         @Mock
         private CategoryGateway categoryGateway;
 
-        @BeforeEach
-        void cleanUp() {
-                Mockito.reset(categoryGateway);
+        @Override
+        protected List<Object> getMocks() {
+                return List.of(categoryGateway);
         }
 
         @Test
