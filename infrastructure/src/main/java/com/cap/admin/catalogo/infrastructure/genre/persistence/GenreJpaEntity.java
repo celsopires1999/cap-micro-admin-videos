@@ -7,6 +7,7 @@ import com.cap.admin.catalogo.domain.genre.GenreID;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
@@ -77,9 +78,7 @@ public class GenreJpaEntity {
                 GenreID.from(getId()),
                 getName(),
                 isActive(),
-                getCategories().stream()
-                        .map(it -> CategoryID.from(it.getId().getCategoryId()))
-                        .toList(),
+                getCategoryIDs(),
                 getCreatedAt(),
                 getUpdatedAt(),
                 getDeletedAt());
@@ -118,6 +117,12 @@ public class GenreJpaEntity {
     public GenreJpaEntity setActive(boolean active) {
         this.active = active;
         return this;
+    }
+
+    public List<CategoryID> getCategoryIDs() {
+        return getCategories().stream()
+                .map(it -> CategoryID.from(it.getId().getCategoryId()))
+                .toList();
     }
 
     public Set<GenreCategoryJpaEntity> getCategories() {
