@@ -1,10 +1,10 @@
 package com.cap.admin.catalogo.infrastructure.api;
 
 import com.cap.admin.catalogo.domain.pagination.Pagination;
-import com.cap.admin.catalogo.infrastructure.genre.models.CreateGenreRequest;
-import com.cap.admin.catalogo.infrastructure.genre.models.GenreListResponse;
-import com.cap.admin.catalogo.infrastructure.genre.models.GenreResponse;
-import com.cap.admin.catalogo.infrastructure.genre.models.UpdateGenreRequest;
+import com.cap.admin.catalogo.infrastructure.castmember.models.CastMemberListResponse;
+import com.cap.admin.catalogo.infrastructure.castmember.models.CastMemberResponse;
+import com.cap.admin.catalogo.infrastructure.castmember.models.CreateCastMemberRequest;
+import com.cap.admin.catalogo.infrastructure.castmember.models.UpdateCastMemberRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,27 +14,26 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping(value = "genres")
-@Tag(name = "Genre")
-public interface GenreAPI {
+@RequestMapping(value = "cast_members")
+@Tag(name = "Cast Members")
+public interface CastMemberAPI {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create a new genre")
+    @Operation(summary = "Create a new cast member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created successfully"),
             @ApiResponse(responseCode = "422", description = "A validation error was thrown"),
             @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
     })
-    ResponseEntity<?> create(@RequestBody CreateGenreRequest input);
+    ResponseEntity<?> create(@RequestBody CreateCastMemberRequest input);
 
-    @GetMapping
-    @Operation(summary = "List all genres paginated")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "List all cast members")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Listed successfully"),
-            @ApiResponse(responseCode = "422", description = "A invalid parameter was received"),
+            @ApiResponse(responseCode = "200", description = "Cast members retrieved"),
             @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
     })
-    Pagination<GenreListResponse> list(
+    Pagination<CastMemberListResponse> list(
             @RequestParam(name = "search", required = false, defaultValue = "") final String search,
             @RequestParam(name = "page", required = false, defaultValue = "0") final int page,
             @RequestParam(name = "perPage", required = false, defaultValue = "10") final int perPage,
@@ -42,30 +41,30 @@ public interface GenreAPI {
             @RequestParam(name = "dir", required = false, defaultValue = "asc") final String direction);
 
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get a genre by its identifier")
+    @Operation(summary = "Get a cast member by it's identifier")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Genre retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Genre was not found"),
+            @ApiResponse(responseCode = "200", description = "Cast member retrieved"),
+            @ApiResponse(responseCode = "404", description = "Cast member was not found"),
             @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
     })
-    GenreResponse getById(@PathVariable(name = "id") String id);
+    CastMemberResponse getById(@PathVariable String id);
 
     @PutMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update a genre by its identifier")
+    @Operation(summary = "Update a cast member by it's identifier")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Genre updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Genre was not found"),
+            @ApiResponse(responseCode = "200", description = "Cast member updated"),
+            @ApiResponse(responseCode = "404", description = "Cast member was not found"),
+            @ApiResponse(responseCode = "422", description = "A validation error was thrown"),
             @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
     })
-    ResponseEntity<?> updateById(@PathVariable(name = "id") String id, @RequestBody UpdateGenreRequest input);
+    ResponseEntity<?> updateById(@PathVariable String id, @RequestBody UpdateCastMemberRequest aBody);
 
     @DeleteMapping(value = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete a genre by its identifier")
+    @Operation(summary = "Delete a cast member by it's identifier")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Genre deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Genre was not found"),
+            @ApiResponse(responseCode = "204", description = "Cast member deleted"),
             @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
     })
-    void deleteById(@PathVariable(name = "id") String id);
+    void deleteById(@PathVariable String id);
 }
