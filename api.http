@@ -2,7 +2,10 @@
 @jwtToken = xxx
 
 @baseUrl = http://localhost:8080/api
+
+###
 ####################### Category ################### 
+###
 # @name createCategory
 POST {{baseUrl}}/categories HTTP/1.1
 Content-Type: application/json
@@ -43,8 +46,11 @@ Authorization: Bearer {{jwtToken}}
 DELETE {{baseUrl}}/categories/{{categoryId}} HTTP/1.1
 Authorization: Bearer {{jwtToken}}
 
+###
 ####################### Genre ################### 
-# @name createGenre
+###
+
+# @name create
 POST {{baseUrl}}/genres HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{jwtToken}}
@@ -57,7 +63,7 @@ Authorization: Bearer {{jwtToken}}
     ]
 }
 
-@genreId = {{createGenre.response.body.id}}
+@genreId = {{create.response.body.id}}
 
 ###
 GET {{baseUrl}}/genres HTTP/1.1
@@ -81,4 +87,44 @@ Authorization: Bearer {{jwtToken}}
 ###
 # @name deleteCategory
 DELETE {{baseUrl}}/genres/{{genreId}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+####################### Cast Member ################### 
+###
+
+# @name createCastMember
+POST {{baseUrl}}/cast_members HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "John Doe",
+    "type": "DIRECTOR" 
+}
+
+@castMemberId = {{createCastMember.response.body.id}}
+
+###
+GET {{baseUrl}}/cast_members HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+GET {{baseUrl}}/cast_members/{{castMemberId}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+# @name updateGenre
+PUT  {{baseUrl}}/cast_members/{{castMemberId}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "John Doe",
+    "type": "ACTOR"
+}
+
+###
+# @name deleteCategory
+DELETE {{baseUrl}}/cast_members/{{castMemberId}} HTTP/1.1
 Authorization: Bearer {{jwtToken}}
