@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":domain"))
 
     implementation libs.vavr
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation libs.junit.jupiter
     testImplementation libs.mockito
     testRuntimeOnly libs.junit.jupiter
