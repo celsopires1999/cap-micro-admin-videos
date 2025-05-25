@@ -1,22 +1,5 @@
 package com.cap.admin.catalogo.application.castmember.update;
 
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import com.cap.admin.catalogo.application.Fixture;
 import com.cap.admin.catalogo.application.UseCaseTest;
 import com.cap.admin.catalogo.domain.castmember.CastMember;
@@ -25,6 +8,18 @@ import com.cap.admin.catalogo.domain.castmember.CastMemberID;
 import com.cap.admin.catalogo.domain.castmember.CastMemberType;
 import com.cap.admin.catalogo.domain.exceptions.NotFoundException;
 import com.cap.admin.catalogo.domain.exceptions.NotificationException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 public class UpdateCastMemberUseCaseTest extends UseCaseTest {
 
@@ -149,9 +144,11 @@ public class UpdateCastMemberUseCaseTest extends UseCaseTest {
         @Test
         public void givenAInvalidId_whenCallsUpdateCastMember_shouldThrowsNotFoundException() {
                 // given
+                final var aMember = CastMember.newMember("vin diesel", CastMemberType.DIRECTOR);
+
                 final var expectedId = CastMemberID.from("123");
                 final var expectedName = Fixture.name();
-                final var expectedType = Fixture.CastMember.type();
+                final var expectedType = Fixture.CastMembers.type();
 
                 final var expectedErrorMessage = "CastMember with ID 123 was not found";
 
