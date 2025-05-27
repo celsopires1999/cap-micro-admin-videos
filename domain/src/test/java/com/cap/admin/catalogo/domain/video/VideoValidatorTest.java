@@ -21,7 +21,7 @@ public class VideoValidatorTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -65,7 +65,7 @@ public class VideoValidatorTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -109,13 +109,13 @@ public class VideoValidatorTest {
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedDescription = """
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;

@@ -3,6 +3,7 @@ package com.cap.admin.catalogo.infrastructure.video.persistence;
 import com.cap.admin.catalogo.domain.castmember.CastMemberID;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.domain.genre.GenreID;
+import com.cap.admin.catalogo.domain.utils.CollectionUtils;
 import com.cap.admin.catalogo.domain.video.Rating;
 import com.cap.admin.catalogo.domain.video.Video;
 import com.cap.admin.catalogo.domain.video.VideoID;
@@ -13,7 +14,6 @@ import java.time.Year;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Table(name = "videos")
@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 public class VideoJpaEntity {
 
     @Id
-    private UUID id;
+    @Column(name = "id", nullable = false)
+    private String id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -39,7 +40,6 @@ public class VideoJpaEntity {
     private boolean published;
 
     @Column(name = "rating")
-    @Enumerated(EnumType.STRING)
     private Rating rating;
 
     @Column(name = "duration", precision = 2)
@@ -84,7 +84,7 @@ public class VideoJpaEntity {
     }
 
     private VideoJpaEntity(
-            final UUID id,
+            final String id,
             final String title,
             final String description,
             final int yearLaunched,
@@ -121,7 +121,7 @@ public class VideoJpaEntity {
 
     public static VideoJpaEntity from(final Video aVideo) {
         final var entity = new VideoJpaEntity(
-                UUID.fromString(aVideo.getId().getValue()),
+                aVideo.getId().getValue(),
                 aVideo.getTitle(),
                 aVideo.getDescription(),
                 aVideo.getLaunchedAt().getValue(),
@@ -209,11 +209,11 @@ public class VideoJpaEntity {
         this.castMembers.add(VideoCastMemberJpaEntity.from(this, anId));
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public VideoJpaEntity setId(UUID id) {
+    public VideoJpaEntity setId(String id) {
         this.id = id;
         return this;
     }
@@ -369,5 +369,17 @@ public class VideoJpaEntity {
     public VideoJpaEntity setCastMembers(Set<VideoCastMemberJpaEntity> castMembers) {
         this.castMembers = castMembers;
         return this;
+    }
+
+    public Set<CategoryID> getCategoriesID() {
+        return CollectionUtils.mapTo(getCategories(), it -> CategoryID.from(it.getId().getCategoryId()));
+    }
+
+    public Set<GenreID> getGenresID() {
+        return CollectionUtils.mapTo(getGenres(), it -> GenreID.from(it.getId().getGenreId()));
+    }
+
+    public Set<CastMemberID> getCastMembersID() {
+        return CollectionUtils.mapTo(getCastMembers(), it -> CastMemberID.from(it.getId().getCastMemberId()));
     }
 }

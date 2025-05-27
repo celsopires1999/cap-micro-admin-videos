@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.cap.admin.catalogo.Fixture;
 import com.cap.admin.catalogo.IntegrationTest;
+import com.cap.admin.catalogo.domain.Fixture;
 import com.cap.admin.catalogo.domain.castmember.CastMember;
 import com.cap.admin.catalogo.domain.castmember.CastMemberGateway;
 import com.cap.admin.catalogo.domain.castmember.CastMemberID;
@@ -33,8 +33,8 @@ public class DeleteCastMemberUseCaseIT {
     @Test
     public void givenAValidId_whenCallsDeleteCastMember_shouldDeleteIt() {
         // given
-        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
-        final var aMemberTwo = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
+        final var aMemberTwo = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
 
         final var expectedId = aMember.getId();
 
@@ -59,7 +59,7 @@ public class DeleteCastMemberUseCaseIT {
         // given
         this.castMemberRepository.saveAndFlush(
                 CastMemberJpaEntity.from(
-                        CastMember.newMember(Fixture.name(), Fixture.CastMember.type())));
+                        CastMember.newMember(Fixture.name(), Fixture.CastMembers.type())));
 
         final var expectedId = CastMemberID.from("123");
 
@@ -77,7 +77,7 @@ public class DeleteCastMemberUseCaseIT {
     @Test
     public void givenAValidId_whenCallsDeleteCastMemberAndGatewayThrowsException_shouldReceiveException() {
         // given
-        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
 
         this.castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(aMember));
 

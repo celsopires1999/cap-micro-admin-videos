@@ -28,7 +28,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.cap.admin.catalogo.ControllerTest;
-import com.cap.admin.catalogo.Fixture;
 import com.cap.admin.catalogo.application.castmember.create.CreateCastMemberOutput;
 import com.cap.admin.catalogo.application.castmember.create.DefaultCreateCastMemberUseCase;
 import com.cap.admin.catalogo.application.castmember.delete.DefaultDeleteCastMemberUseCase;
@@ -38,6 +37,7 @@ import com.cap.admin.catalogo.application.castmember.retrieve.list.CastMemberLis
 import com.cap.admin.catalogo.application.castmember.retrieve.list.DefaultListCastMembersUseCase;
 import com.cap.admin.catalogo.application.castmember.update.DefaultUpdateCastMemberUseCase;
 import com.cap.admin.catalogo.application.castmember.update.UpdateCastMemberOutput;
+import com.cap.admin.catalogo.domain.Fixture;
 import com.cap.admin.catalogo.domain.castmember.CastMember;
 import com.cap.admin.catalogo.domain.castmember.CastMemberID;
 import com.cap.admin.catalogo.domain.castmember.CastMemberType;
@@ -77,7 +77,7 @@ public class CastMemberAPITest {
     public void givenAValidCommand_whenCallsCreateCastMember_shouldReturnItsIdentifier() throws Exception {
         // given
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
         final var expectedId = CastMemberID.from("o1i2u3i1o");
 
         final var aCommand = new CreateCastMemberRequest(expectedName, expectedType);
@@ -99,15 +99,16 @@ public class CastMemberAPITest {
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id", equalTo(expectedId.getValue())));
 
-        verify(createCastMemberUseCase).execute(argThat(actualCmd -> Objects.equals(expectedName, actualCmd.name())
-                && Objects.equals(expectedType, actualCmd.type())));
+        verify(createCastMemberUseCase)
+                .execute(argThat(actualCmd -> Objects.equals(expectedName, actualCmd.name())
+                        && Objects.equals(expectedType, actualCmd.type())));
     }
 
     @Test
     public void givenAnInvalidName_whenCallsCreateCastMember_shouldReturnNotification() throws Exception {
         // given
         final String expectedName = null;
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
 
         final var expectedErrorMessage = "'name' should not be null";
 
@@ -131,15 +132,16 @@ public class CastMemberAPITest {
                 .andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
 
-        verify(createCastMemberUseCase).execute(argThat(actualCmd -> Objects.equals(expectedName, actualCmd.name())
-                && Objects.equals(expectedType, actualCmd.type())));
+        verify(createCastMemberUseCase)
+                .execute(argThat(actualCmd -> Objects.equals(expectedName, actualCmd.name())
+                        && Objects.equals(expectedType, actualCmd.type())));
     }
 
     @Test
     public void givenAValidId_whenCallsGetById_shouldReturnIt() throws Exception {
         // given
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
 
         final var aMember = CastMember.newMember(expectedName, expectedType);
         final var expectedId = aMember.getId().getValue();
@@ -192,7 +194,7 @@ public class CastMemberAPITest {
     public void givenAValidCommand_whenCallsUpdateCastMember_shouldReturnItsIdentifier() throws Exception {
         // given
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
 
         final var aMember = CastMember.newMember(expectedName, expectedType);
         final var expectedId = aMember.getId();
@@ -228,7 +230,7 @@ public class CastMemberAPITest {
         final var expectedId = aMember.getId();
 
         final String expectedName = null;
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
 
         final var expectedErrorMessage = "'name' should not be null";
 
@@ -264,7 +266,7 @@ public class CastMemberAPITest {
         final var expectedId = CastMemberID.from("123");
 
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
 
         final var expectedErrorMessage = "CastMember with ID 123 was not found";
 
@@ -315,7 +317,7 @@ public class CastMemberAPITest {
     @Test
     public void givenValidParams_whenCallListCastMembers_shouldReturnIt() throws Exception {
         // given
-        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
 
         final var expectedPage = 1;
         final var expectedPerPage = 20;
@@ -329,7 +331,8 @@ public class CastMemberAPITest {
         final var expectedItems = List.of(CastMemberListOutput.from(aMember));
 
         when(listCastMembersUseCase.execute(any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal,
+                        expectedItems));
 
         // when
         final var aRequest = get("/cast_members")
@@ -351,7 +354,8 @@ public class CastMemberAPITest {
                 .andExpect(jsonPath("$.items[0].id", equalTo(aMember.getId().getValue())))
                 .andExpect(jsonPath("$.items[0].name", equalTo(aMember.getName())))
                 .andExpect(jsonPath("$.items[0].type", equalTo(aMember.getType().name())))
-                .andExpect(jsonPath("$.items[0].created_at", equalTo(aMember.getCreatedAt().toString())));
+                .andExpect(jsonPath("$.items[0].created_at",
+                        equalTo(aMember.getCreatedAt().toString())));
 
         verify(listCastMembersUseCase).execute(argThat(aQuery -> Objects.equals(expectedPage, aQuery.page())
                 && Objects.equals(expectedPerPage, aQuery.perPage())
@@ -363,7 +367,7 @@ public class CastMemberAPITest {
     @Test
     public void givenEmptyParams_whenCallListCastMembers_shouldUseDefaultsAndReturnIt() throws Exception {
         // given
-        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
 
         final var expectedPage = 0;
         final var expectedPerPage = 10;
@@ -377,7 +381,8 @@ public class CastMemberAPITest {
         final var expectedItems = List.of(CastMemberListOutput.from(aMember));
 
         when(listCastMembersUseCase.execute(any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal,
+                        expectedItems));
 
         // when
         final var aRequest = get("/cast_members")
@@ -394,7 +399,8 @@ public class CastMemberAPITest {
                 .andExpect(jsonPath("$.items[0].id", equalTo(aMember.getId().getValue())))
                 .andExpect(jsonPath("$.items[0].name", equalTo(aMember.getName())))
                 .andExpect(jsonPath("$.items[0].type", equalTo(aMember.getType().name())))
-                .andExpect(jsonPath("$.items[0].created_at", equalTo(aMember.getCreatedAt().toString())));
+                .andExpect(jsonPath("$.items[0].created_at",
+                        equalTo(aMember.getCreatedAt().toString())));
 
         verify(listCastMembersUseCase).execute(argThat(aQuery -> Objects.equals(expectedPage, aQuery.page())
                 && Objects.equals(expectedPerPage, aQuery.perPage())

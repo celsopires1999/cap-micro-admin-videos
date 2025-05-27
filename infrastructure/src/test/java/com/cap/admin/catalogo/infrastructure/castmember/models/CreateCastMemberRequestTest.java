@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.json.JacksonTester;
 
-import com.cap.admin.catalogo.Fixture;
 import com.cap.admin.catalogo.JacksonTest;
+import com.cap.admin.catalogo.domain.Fixture;
 
 @JacksonTest
 class CreateCastMemberRequestTest {
@@ -17,7 +17,7 @@ class CreateCastMemberRequestTest {
   @Test
   public void testUnmarshall() throws Exception {
     final var expectedName = Fixture.name();
-    final var expectedType = Fixture.CastMember.type();
+    final var expectedType = Fixture.CastMembers.type();
 
     final var json = """
         {

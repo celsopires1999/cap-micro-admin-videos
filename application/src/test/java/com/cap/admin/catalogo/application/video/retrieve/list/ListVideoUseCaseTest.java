@@ -1,11 +1,11 @@
 package com.cap.admin.catalogo.application.video.retrieve.list;
 
-import com.cap.admin.catalogo.application.Fixture;
 import com.cap.admin.catalogo.application.UseCaseTest;
 import com.cap.admin.catalogo.application.genre.retrieve.list.GenreListOutput;
+import com.cap.admin.catalogo.domain.Fixture;
 import com.cap.admin.catalogo.domain.pagination.Pagination;
-import com.cap.admin.catalogo.domain.video.Video;
 import com.cap.admin.catalogo.domain.video.VideoGateway;
+import com.cap.admin.catalogo.domain.video.VideoPreview;
 import com.cap.admin.catalogo.domain.video.VideoSearchQuery;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -37,8 +38,8 @@ public class ListVideoUseCaseTest extends UseCaseTest {
         public void givenAValidQuery_whenCallsListVideos_shouldReturnVideos() {
                 // given
                 final var videos = List.of(
-                                Fixture.video(),
-                                Fixture.video());
+                                new VideoPreview(Fixture.video()),
+                                new VideoPreview(Fixture.video()));
 
                 final var expectedPage = 0;
                 final var expectedPerPage = 10;
@@ -60,8 +61,15 @@ public class ListVideoUseCaseTest extends UseCaseTest {
                 when(videoGateway.findAll(any()))
                                 .thenReturn(expectedPagination);
 
-                final var aQuery = new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
-                                expectedDirection);
+                final var aQuery = new VideoSearchQuery(
+                                expectedPage,
+                                expectedPerPage,
+                                expectedTerms,
+                                expectedSort,
+                                expectedDirection,
+                                Set.of(),
+                                Set.of(),
+                                Set.of());
 
                 // when
                 final var actualOutput = useCase.execute(aQuery);
@@ -78,7 +86,7 @@ public class ListVideoUseCaseTest extends UseCaseTest {
         @Test
         public void givenAValidQuery_whenCallsListVideosAndResultIsEmpty_shouldReturnGenres() {
                 // given
-                final var videos = List.<Video>of();
+                final var videos = List.<VideoPreview>of();
 
                 final var expectedPage = 0;
                 final var expectedPerPage = 10;
@@ -98,8 +106,15 @@ public class ListVideoUseCaseTest extends UseCaseTest {
                 when(videoGateway.findAll(any()))
                                 .thenReturn(expectedPagination);
 
-                final var aQuery = new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
-                                expectedDirection);
+                final var aQuery = new VideoSearchQuery(
+                                expectedPage,
+                                expectedPerPage,
+                                expectedTerms,
+                                expectedSort,
+                                expectedDirection,
+                                Set.of(),
+                                Set.of(),
+                                Set.of());
 
                 // when
                 final var actualOutput = useCase.execute(aQuery);
@@ -127,8 +142,15 @@ public class ListVideoUseCaseTest extends UseCaseTest {
                 when(videoGateway.findAll(any()))
                                 .thenThrow(new IllegalStateException(expectedErrorMessage));
 
-                final var aQuery = new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
-                                expectedDirection);
+                final var aQuery = new VideoSearchQuery(
+                                expectedPage,
+                                expectedPerPage,
+                                expectedTerms,
+                                expectedSort,
+                                expectedDirection,
+                                Set.of(),
+                                Set.of(),
+                                Set.of());
 
                 // when
                 final var actualOutput = Assertions.assertThrows(

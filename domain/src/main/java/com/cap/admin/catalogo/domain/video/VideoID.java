@@ -1,12 +1,11 @@
 package com.cap.admin.catalogo.domain.video;
 
 import com.cap.admin.catalogo.domain.Identifier;
+import com.cap.admin.catalogo.domain.utils.IdUtils;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class VideoID extends Identifier {
-
     private final String value;
 
     private VideoID(final String value) {
@@ -17,12 +16,8 @@ public class VideoID extends Identifier {
         return new VideoID(anId.toLowerCase());
     }
 
-    public static VideoID from(final UUID anId) {
-        return VideoID.from(anId.toString());
-    }
-
     public static VideoID unique() {
-        return VideoID.from(UUID.randomUUID());
+        return VideoID.from(IdUtils.uuid());
     }
 
     @Override

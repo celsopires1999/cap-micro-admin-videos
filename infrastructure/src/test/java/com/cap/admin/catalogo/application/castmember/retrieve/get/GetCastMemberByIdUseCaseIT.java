@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.cap.admin.catalogo.Fixture;
 import com.cap.admin.catalogo.IntegrationTest;
+import com.cap.admin.catalogo.domain.Fixture;
 import com.cap.admin.catalogo.domain.castmember.CastMember;
 import com.cap.admin.catalogo.domain.castmember.CastMemberGateway;
 import com.cap.admin.catalogo.domain.castmember.CastMemberID;
@@ -34,7 +34,7 @@ public class GetCastMemberByIdUseCaseIT {
     public void givenAValidId_whenCallsGetCastMember_shouldReturnIt() {
         // given
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
 
         final var aMember = CastMember.newMember(expectedName, expectedType);
 

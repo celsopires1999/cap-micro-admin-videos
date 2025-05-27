@@ -7,18 +7,15 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.cap.admin.catalogo.application.UseCaseTest;
 import com.cap.admin.catalogo.domain.category.Category;
 import com.cap.admin.catalogo.domain.category.CategoryGateway;
-import com.cap.admin.catalogo.domain.category.CategorySearchQuery;
 import com.cap.admin.catalogo.domain.pagination.Pagination;
+import com.cap.admin.catalogo.domain.pagination.SearchQuery;
 
-@ExtendWith(MockitoExtension.class)
 public class ListCategoriesUseCaseTest extends UseCaseTest {
 
         @InjectMocks
@@ -44,7 +41,7 @@ public class ListCategoriesUseCaseTest extends UseCaseTest {
                 final var expectedSort = "createdAt";
                 final var expectedDirection = "asc";
 
-                final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+                final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                                 expectedDirection);
 
                 final var expectedPagination = new Pagination<>(expectedPage, expectedPerPage, categories.size(),
@@ -75,7 +72,7 @@ public class ListCategoriesUseCaseTest extends UseCaseTest {
                 final var expectedSort = "createdAt";
                 final var expectedDirection = "asc";
 
-                final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+                final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                                 expectedDirection);
 
                 final var expectedPagination = new Pagination<>(expectedPage, expectedPerPage, categories.size(),
@@ -105,7 +102,7 @@ public class ListCategoriesUseCaseTest extends UseCaseTest {
                 final var expectedDirection = "asc";
                 final var expectedErrorMessage = "Gateway error";
 
-                final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+                final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                                 expectedDirection);
 
                 when(categoryGateway.findAll(eq(aQuery)))

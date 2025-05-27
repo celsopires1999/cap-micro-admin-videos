@@ -1,7 +1,5 @@
 package com.cap.admin.catalogo.infrastructure.category.persistence;
 
-import java.time.Instant;
-
 import com.cap.admin.catalogo.domain.category.Category;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 
@@ -9,22 +7,24 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = "Category")
 @Table(name = "categories")
 public class CategoryJpaEntity {
 
     @Id
+    @Column(name = "id", nullable = false)
     private String id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", length = 4000, nullable = true)
+    @Column(name = "description", length = 4000)
     private String description;
 
     @Column(name = "active", nullable = false)
-    private Boolean active;
+    private boolean active;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant createdAt;
@@ -32,7 +32,7 @@ public class CategoryJpaEntity {
     @Column(name = "updated_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant updatedAt;
 
-    @Column(name = "deleted_at", nullable = true, columnDefinition = "DATETIME(6)")
+    @Column(name = "deleted_at", columnDefinition = "DATETIME(6)")
     private Instant deletedAt;
 
     public CategoryJpaEntity() {
@@ -42,7 +42,7 @@ public class CategoryJpaEntity {
             final String id,
             final String name,
             final String description,
-            final Boolean active,
+            final boolean active,
             final Instant createdAt,
             final Instant updatedAt,
             final Instant deletedAt) {
@@ -78,7 +78,7 @@ public class CategoryJpaEntity {
     }
 
     public String getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(String id) {
@@ -86,7 +86,7 @@ public class CategoryJpaEntity {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -94,7 +94,7 @@ public class CategoryJpaEntity {
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
@@ -110,7 +110,7 @@ public class CategoryJpaEntity {
     }
 
     public Instant getCreatedAt() {
-        return this.createdAt;
+        return createdAt;
     }
 
     public void setCreatedAt(Instant createdAt) {
@@ -118,7 +118,7 @@ public class CategoryJpaEntity {
     }
 
     public Instant getUpdatedAt() {
-        return this.updatedAt;
+        return updatedAt;
     }
 
     public void setUpdatedAt(Instant updatedAt) {
@@ -126,11 +126,10 @@ public class CategoryJpaEntity {
     }
 
     public Instant getDeletedAt() {
-        return this.deletedAt;
+        return deletedAt;
     }
 
     public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
     }
-
 }

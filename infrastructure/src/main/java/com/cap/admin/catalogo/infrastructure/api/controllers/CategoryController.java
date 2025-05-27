@@ -1,5 +1,12 @@
 package com.cap.admin.catalogo.infrastructure.api.controllers;
 
+import java.net.URI;
+import java.util.Objects;
+import java.util.function.Function;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cap.admin.catalogo.application.category.create.CreateCategoryCommand;
 import com.cap.admin.catalogo.application.category.create.CreateCategoryOutput;
 import com.cap.admin.catalogo.application.category.create.CreateCategoryUseCase;
@@ -9,8 +16,8 @@ import com.cap.admin.catalogo.application.category.retrieve.list.ListCategoriesU
 import com.cap.admin.catalogo.application.category.update.UpdateCategoryCommand;
 import com.cap.admin.catalogo.application.category.update.UpdateCategoryOutput;
 import com.cap.admin.catalogo.application.category.update.UpdateCategoryUseCase;
-import com.cap.admin.catalogo.domain.category.CategorySearchQuery;
 import com.cap.admin.catalogo.domain.pagination.Pagination;
+import com.cap.admin.catalogo.domain.pagination.SearchQuery;
 import com.cap.admin.catalogo.domain.validation.handler.Notification;
 import com.cap.admin.catalogo.infrastructure.api.CategoryAPI;
 import com.cap.admin.catalogo.infrastructure.category.models.CategoryListResponse;
@@ -18,12 +25,6 @@ import com.cap.admin.catalogo.infrastructure.category.models.CategoryResponse;
 import com.cap.admin.catalogo.infrastructure.category.models.CreateCategoryRequest;
 import com.cap.admin.catalogo.infrastructure.category.models.UpdateCategoryRequest;
 import com.cap.admin.catalogo.infrastructure.category.presenters.CategoryApiPresenter;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.net.URI;
-import java.util.Objects;
-import java.util.function.Function;
 
 @RestController
 public class CategoryController implements CategoryAPI {
@@ -71,7 +72,7 @@ public class CategoryController implements CategoryAPI {
                         final int perPage,
                         final String sort,
                         final String direction) {
-                return listCategoriesUseCase.execute(new CategorySearchQuery(page, perPage, search, sort, direction))
+                return listCategoriesUseCase.execute(new SearchQuery(page, perPage, search, sort, direction))
                                 .map(CategoryApiPresenter::present);
         }
 
