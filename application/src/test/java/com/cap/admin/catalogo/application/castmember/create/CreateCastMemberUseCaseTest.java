@@ -1,6 +1,6 @@
 package com.cap.admin.catalogo.application.castmember.create;
 
-import com.cap.admin.catalogo.application.Fixture;
+import com.cap.admin.catalogo.domain.Fixture;
 import com.cap.admin.catalogo.application.UseCaseTest;
 import com.cap.admin.catalogo.domain.castmember.CastMemberGateway;
 import com.cap.admin.catalogo.domain.castmember.CastMemberType;

@@ -1,8 +1,9 @@
 package com.cap.admin.catalogo.application.video.retrieve.get;
 
-import com.cap.admin.catalogo.application.Fixture;
+import com.cap.admin.catalogo.domain.Fixture;
 import com.cap.admin.catalogo.application.UseCaseTest;
 import com.cap.admin.catalogo.domain.exceptions.NotFoundException;
+import com.cap.admin.catalogo.domain.utils.IdUtils;
 import com.cap.admin.catalogo.domain.video.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -118,8 +118,9 @@ public class GetVideoByIdUseCaseTest extends UseCaseTest {
         }
 
         private AudioVideoMedia audioVideo(final Resource.Type type) {
-                final var checksum = UUID.randomUUID().toString();
+                final var checksum = IdUtils.uuid();
                 return AudioVideoMedia.with(
+                                checksum,
                                 checksum,
                                 type.name().toLowerCase(),
                                 "/videos/" + checksum,
@@ -128,7 +129,7 @@ public class GetVideoByIdUseCaseTest extends UseCaseTest {
         }
 
         private ImageMedia image(final Resource.Type type) {
-                final var checksum = UUID.randomUUID().toString();
+                final var checksum = IdUtils.uuid();
                 return ImageMedia.with(
                                 checksum,
                                 type.name().toLowerCase(),

@@ -1,7 +1,10 @@
 package com.cap.admin.catalogo.application.category.retrieve.list;
 
-import java.util.stream.Stream;
-
+import com.cap.admin.catalogo.IntegrationTest;
+import com.cap.admin.catalogo.domain.category.Category;
+import com.cap.admin.catalogo.domain.pagination.SearchQuery;
+import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
+import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,11 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.cap.admin.catalogo.IntegrationTest;
-import com.cap.admin.catalogo.domain.category.Category;
-import com.cap.admin.catalogo.domain.category.CategorySearchQuery;
-import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
-import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryRepository;
+import java.util.stream.Stream;
 
 @IntegrationTest
 public class ListCategoriesUseCaseIT {
@@ -27,12 +26,12 @@ public class ListCategoriesUseCaseIT {
         @BeforeEach
         void mockUp() {
                 final var categories = Stream.of(
-                                Category.newCategory("Movies", null, true),
-                                Category.newCategory("Netflix Originals", "Titles authored by Netflix", true),
-                                Category.newCategory("Amazon Originals", "Titles authored by Amazon Prime", true),
-                                Category.newCategory("Documentaries", null, true),
+                                Category.newCategory("Filmes", null, true),
+                                Category.newCategory("Netflix Originals", "Títulos de autoria da Netflix", true),
+                                Category.newCategory("Amazon Originals", "Títulos de autoria da Amazon Prime", true),
+                                Category.newCategory("Documentários", null, true),
                                 Category.newCategory("Sports", null, true),
-                                Category.newCategory("Kids", "Category for children", true),
+                                Category.newCategory("Kids", "Categoria para crianças", true),
                                 Category.newCategory("Series", null, true))
                                 .map(CategoryJpaEntity::from)
                                 .toList();
@@ -44,13 +43,13 @@ public class ListCategoriesUseCaseIT {
         public void givenAValidTerm_whenTermDoesntMatchsPrePersisted_shouldReturnEmptyPage() {
                 final var expectedPage = 0;
                 final var expectedPerPage = 10;
-                final var expectedTerms = "does not exist";
+                final var expectedTerms = "ji1j3i 1j3i1oj";
                 final var expectedSort = "name";
                 final var expectedDirection = "asc";
                 final var expectedItemsCount = 0;
                 final var expectedTotal = 0;
 
-                final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+                final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                                 expectedDirection);
 
                 final var actualResult = useCase.execute(aQuery);
@@ -63,12 +62,12 @@ public class ListCategoriesUseCaseIT {
 
         @ParameterizedTest
         @CsvSource({
-                        "mov,0,10,1,1,Movies",
+                        "fil,0,10,1,1,Filmes",
                         "net,0,10,1,1,Netflix Originals",
                         "ZON,0,10,1,1,Amazon Originals",
                         "KI,0,10,1,1,Kids",
-                        "children,0,10,1,1,Kids",
-                        "by Amazon,0,10,1,1,Amazon Originals",
+                        "crianças,0,10,1,1,Kids",
+                        "da Amazon,0,10,1,1,Amazon Originals",
         })
         public void givenAValidTerm_whenCallsListCategories_shouldReturnCategoriesFiltered(
                         final String expectedTerms,
@@ -80,7 +79,7 @@ public class ListCategoriesUseCaseIT {
                 final var expectedSort = "name";
                 final var expectedDirection = "asc";
 
-                final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+                final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                                 expectedDirection);
 
                 final var actualResult = useCase.execute(aQuery);
@@ -96,7 +95,7 @@ public class ListCategoriesUseCaseIT {
         @CsvSource({
                         "name,asc,0,10,7,7,Amazon Originals",
                         "name,desc,0,10,7,7,Sports",
-                        "createdAt,asc,0,10,7,7,Movies",
+                        "createdAt,asc,0,10,7,7,Filmes",
                         "createdAt,desc,0,10,7,7,Series",
         })
         public void givenAValidSortAndDirection_whenCallsListCategories_thenShouldReturnCategoriesOrdered(
@@ -109,7 +108,7 @@ public class ListCategoriesUseCaseIT {
                         final String expectedCategoryName) {
                 final var expectedTerms = "";
 
-                final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+                final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                                 expectedDirection);
 
                 final var actualResult = useCase.execute(aQuery);
@@ -123,8 +122,8 @@ public class ListCategoriesUseCaseIT {
 
         @ParameterizedTest
         @CsvSource({
-                        "0,2,2,7,Amazon Originals;Documentaries",
-                        "1,2,2,7,Kids;Movies",
+                        "0,2,2,7,Amazon Originals;Documentários",
+                        "1,2,2,7,Filmes;Kids",
                         "2,2,2,7,Netflix Originals;Series",
                         "3,2,1,7,Sports",
         })
@@ -138,7 +137,7 @@ public class ListCategoriesUseCaseIT {
                 final var expectedDirection = "asc";
                 final var expectedTerms = "";
 
-                final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+                final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                                 expectedDirection);
 
                 final var actualResult = useCase.execute(aQuery);

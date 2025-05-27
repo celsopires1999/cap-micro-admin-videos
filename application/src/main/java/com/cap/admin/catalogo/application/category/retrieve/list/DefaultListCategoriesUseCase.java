@@ -1,7 +1,7 @@
 package com.cap.admin.catalogo.application.category.retrieve.list;
 
 import com.cap.admin.catalogo.domain.category.CategoryGateway;
-import com.cap.admin.catalogo.domain.category.CategorySearchQuery;
+import com.cap.admin.catalogo.domain.pagination.SearchQuery;
 import com.cap.admin.catalogo.domain.pagination.Pagination;
 
 import java.util.Objects;
@@ -15,7 +15,7 @@ public class DefaultListCategoriesUseCase extends ListCategoriesUseCase {
     }
 
     @Override
-    public Pagination<CategoryListOutput> execute(final CategorySearchQuery aQuery) {
+    public Pagination<CategoryListOutput> execute(final SearchQuery aQuery) {
         return this.categoryGateway.findAll(aQuery)
                 .map(CategoryListOutput::from);
     }

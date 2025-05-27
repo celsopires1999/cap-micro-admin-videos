@@ -1,26 +1,25 @@
 package com.cap.admin.catalogo.infrastructure.category;
 
-import static com.cap.admin.catalogo.infrastructure.utils.SpecificationUtils.like;
+import com.cap.admin.catalogo.domain.category.Category;
+import com.cap.admin.catalogo.domain.category.CategoryGateway;
+import com.cap.admin.catalogo.domain.category.CategoryID;
+import com.cap.admin.catalogo.domain.pagination.Pagination;
+import com.cap.admin.catalogo.domain.pagination.SearchQuery;
+import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
+import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
+import static com.cap.admin.catalogo.infrastructure.utils.SpecificationUtils.like;
 
-import com.cap.admin.catalogo.domain.category.Category;
-import com.cap.admin.catalogo.domain.category.CategoryGateway;
-import com.cap.admin.catalogo.domain.category.CategoryID;
-import com.cap.admin.catalogo.domain.category.CategorySearchQuery;
-import com.cap.admin.catalogo.domain.pagination.Pagination;
-import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
-import com.cap.admin.catalogo.infrastructure.category.persistence.CategoryRepository;
-
-@Service
+@Component
 public class CategoryMySQLGateway implements CategoryGateway {
 
     private final CategoryRepository repository;
@@ -54,7 +53,7 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Pagination<Category> findAll(final CategorySearchQuery aQuery) {
+    public Pagination<Category> findAll(final SearchQuery aQuery) {
         // Paginação
         final var page = PageRequest.of(
                 aQuery.page(),

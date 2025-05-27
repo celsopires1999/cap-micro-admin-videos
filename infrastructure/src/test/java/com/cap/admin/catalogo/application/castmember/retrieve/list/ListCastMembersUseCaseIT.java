@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import com.cap.admin.catalogo.Fixture;
 import com.cap.admin.catalogo.IntegrationTest;
+import com.cap.admin.catalogo.domain.Fixture;
 import com.cap.admin.catalogo.domain.castmember.CastMember;
 import com.cap.admin.catalogo.domain.castmember.CastMemberGateway;
 import com.cap.admin.catalogo.domain.pagination.SearchQuery;
@@ -35,8 +35,8 @@ public class ListCastMembersUseCaseIT {
         public void givenAValidQuery_whenCallsListCastMembers_shouldReturnAll() {
                 // given
                 final var members = List.of(
-                                CastMember.newMember(Fixture.name(), Fixture.CastMember.type()),
-                                CastMember.newMember(Fixture.name(), Fixture.CastMember.type()));
+                                CastMember.newMember(Fixture.name(), Fixture.CastMembers.type()),
+                                CastMember.newMember(Fixture.name(), Fixture.CastMembers.type()));
 
                 this.castMemberRepository.saveAllAndFlush(
                                 members.stream()

@@ -10,12 +10,29 @@ repositories {
 }
 
 dependencies {
+    implementation libs.vavr
     testImplementation libs.junit.jupiter
+    testImplementation 'net.datafaker:datafaker:2.4.3'
     testRuntimeOnly libs.junit.jupiter
 }
 
 test {
     useJUnitPlatform()
+}
+
+configurations {
+    testClasses {
+        extendsFrom(testImplementation)
+    }
+}
+
+task testJar(type: Jar) {
+    archiveClassifier.set('test')
+    from sourceSets.test.output
+}
+
+artifacts {
+    testClasses testJar
 }
 
 java {

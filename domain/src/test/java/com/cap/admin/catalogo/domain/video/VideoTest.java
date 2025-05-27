@@ -20,7 +20,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -77,7 +77,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -145,7 +145,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -168,8 +168,7 @@ public class VideoTest {
                                 expectedGenres,
                                 expectedMembers);
 
-                final var aVideoMedia = AudioVideoMedia.with("abc", "Video.mp4", "/123/videos", "",
-                                MediaStatus.PENDING);
+                final var aVideoMedia = AudioVideoMedia.with("abc", "Video.mp4", "/123/videos");
 
                 // when
                 final var actualVideo = Video.with(aVideo).setVideo(aVideoMedia);
@@ -206,7 +205,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -229,8 +228,7 @@ public class VideoTest {
                                 expectedGenres,
                                 expectedMembers);
 
-                final var aTrailerMedia = AudioVideoMedia.with("abc", "Trailer.mp4", "/123/videos", "",
-                                MediaStatus.PENDING);
+                final var aTrailerMedia = AudioVideoMedia.with("abc", "Trailer.mp4", "/123/videos");
 
                 // when
                 final var actualVideo = Video.with(aVideo).setTrailer(aTrailerMedia);
@@ -267,7 +265,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -327,7 +325,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -387,7 +385,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.capscycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
