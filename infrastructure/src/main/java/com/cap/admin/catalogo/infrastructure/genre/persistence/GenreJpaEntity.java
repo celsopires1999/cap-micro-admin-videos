@@ -1,19 +1,24 @@
 package com.cap.admin.catalogo.infrastructure.genre.persistence;
 
-import com.cap.admin.catalogo.domain.category.CategoryID;
-import com.cap.admin.catalogo.domain.genre.Genre;
-import com.cap.admin.catalogo.domain.genre.GenreID;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.EAGER;
 
-import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.EAGER;
+import com.cap.admin.catalogo.domain.category.CategoryID;
+import com.cap.admin.catalogo.domain.genre.Genre;
+import com.cap.admin.catalogo.domain.genre.GenreID;
 
-@Entity
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity(name = "Genre")
 @Table(name = "genres")
 public class GenreJpaEntity {
 
@@ -88,9 +93,9 @@ public class GenreJpaEntity {
         this.categories.add(GenreCategoryJpaEntity.from(this, anId));
     }
 
-    private void removeCategory(final CategoryID anId) {
-        this.categories.remove(GenreCategoryJpaEntity.from(this, anId));
-    }
+    // private void removeCategory(final CategoryID anId) {
+    // this.categories.remove(GenreCategoryJpaEntity.from(this, anId));
+    // }
 
     public String getId() {
         return id;
