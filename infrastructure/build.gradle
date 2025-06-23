@@ -31,11 +31,15 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":application"))
 
-    implementation libs.vavr
-    implementation libs.springdoc
+    implementation(libs.vavr)
+    implementation(libs.springdoc)
 
     implementation 'com.mysql:mysql-connector-j'
 
+    // implementation ('com.google.cloud:google-cloud-storage:2.53.1')
+    implementation(libs.cloudstorage)
+    implementation(libs.guava) 
+    
     implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
@@ -51,7 +55,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
     // testImplementation 'com.github.javafaker:javafaker:1.0.2'
-    testImplementation 'net.datafaker:datafaker:2.4.3'
+    testImplementation ('net.datafaker:datafaker:2.4.3')
 
     testImplementation('org.testcontainers:testcontainers:1.21.0')
     testImplementation('org.testcontainers:mysql:1.21.0')

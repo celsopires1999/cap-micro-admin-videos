@@ -1,9 +1,9 @@
 package com.cap.admin.catalogo.application.video.create;
 
-import com.cap.admin.catalogo.domain.video.Resource;
-
 import java.util.Optional;
 import java.util.Set;
+
+import com.cap.admin.catalogo.domain.resource.Resource;
 
 public record CreateVideoCommand(
         String title,

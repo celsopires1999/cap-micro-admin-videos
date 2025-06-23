@@ -38,7 +38,7 @@
 				"eamodio.gitlens",
 				"humao.rest-client",
 				"cweijan.vscode-postgresql-client2",
-				"codeium.codeium",
+				// "codeium.codeium",
 				"ms-azuretools.vscode-containers"
 			]
 		}
