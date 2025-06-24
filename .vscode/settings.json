@@ -25,7 +25,7 @@
     "java.dependency.packagePresentation": "hierarchical",
     "java.jdt.ls.java.home": "/home/dev/.sdkman/candidates/java/current",
     "terminal.integrated.env.linux": {
-        "GOOGLE_CLOUD_CREDENTIALS": "my_credential",
-        "GOOGLE_CLOUD_PROJECT": "my_project_id"
+        "GOOGLE_CLOUD_CREDENTIALS": "google-credentials",
+        "GOOGLE_CLOUD_PROJECT": "project"
     }
 }

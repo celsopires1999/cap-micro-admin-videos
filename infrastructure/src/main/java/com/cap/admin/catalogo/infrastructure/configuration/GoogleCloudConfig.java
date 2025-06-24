@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Objects;
 
-// @Profile({ "!development & !test-integration & !test-e2e" })
 @Configuration
 @Profile({ "development", "production" })
 public class GoogleCloudConfig {
@@ -44,29 +43,29 @@ public class GoogleCloudConfig {
         return GoogleCredentials.fromStream(new ByteArrayInputStream(jsonBin));
     }
 
-    // @Bean
-    // public Storage storage(
-    // final Credentials credentials,
-    // final GoogleCloudProperties cloudConfig,
-    // final GoogleStorageProperties storageConfig) {
-    // final var transportOptions = HttpTransportOptions.newBuilder()
-    // .setConnectTimeout(storageConfig.getConnectTimeout())
-    // .setReadTimeout(storageConfig.getReadTimeout())
-    // .build();
+    @Bean
+    public Storage storage(
+            final Credentials credentials,
+            final GoogleCloudProperties cloudConfig,
+            final GoogleStorageProperties storageConfig) {
+        final var transportOptions = HttpTransportOptions.newBuilder()
+                .setConnectTimeout(storageConfig.getConnectTimeout())
+                .setReadTimeout(storageConfig.getReadTimeout())
+                .build();
 
-    // final var retry = RetrySettings.newBuilder()
-    // .setInitialRetryDelay(Duration.ofMillis(storageConfig.getRetryDelay()))
-    // .setMaxRetryDelay(Duration.ofMillis(storageConfig.getRetryMaxDelay()))
-    // .setMaxAttempts(storageConfig.getRetryMaxAttempts())
-    // .setRetryDelayMultiplier(storageConfig.getRetryMultiplier())
-    // .build();
+        final var retry = RetrySettings.newBuilder()
+                .setInitialRetryDelay(Duration.ofMillis(storageConfig.getRetryDelay()))
+                .setMaxRetryDelay(Duration.ofMillis(storageConfig.getRetryMaxDelay()))
+                .setMaxAttempts(storageConfig.getRetryMaxAttempts())
+                .setRetryDelayMultiplier(storageConfig.getRetryMultiplier())
+                .build();
 
-    // return StorageOptions.newBuilder()
-    // .setCredentials(credentials)
-    // .setProjectId(cloudConfig.getProjectId())
-    // .setTransportOptions(transportOptions)
-    // .setRetrySettings(retry)
-    // .build()
-    // .getService();
-    // }
+        return StorageOptions.newBuilder()
+                .setCredentials(credentials)
+                .setProjectId(cloudConfig.getProjectId())
+                .setTransportOptions(transportOptions)
+                .setRetrySettings(retry)
+                .build()
+                .getService();
+    }
 }
