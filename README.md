@@ -14,6 +14,8 @@
 2. Executar a aplicação como SpringBoot app:
 ```shell
 ./gradlew bootRun
+export $(grep -v '^#' .env | xargs) && ./gradlew bootRun
+export $(grep -v '^#' .env | xargs) && ./gradlew bootRun --debug-jvm
 ``` 
 
 > Também é possível executar como uma aplicação Java através do

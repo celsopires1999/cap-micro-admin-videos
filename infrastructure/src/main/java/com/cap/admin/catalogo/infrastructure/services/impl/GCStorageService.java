@@ -32,13 +32,12 @@ public class GCStorageService implements StorageService {
 
     @Override
     public Optional<Resource> get(final String id) {
-        final var blob = this.storage.get(this.bucket, id);
-
-        return Optional.ofNullable(Resource.with(
-                blob.getContent(),
-                blob.getCrc32cToHexString(),
-                blob.getContentType(),
-                blob.getName()));
+        return Optional.ofNullable(this.storage.get(this.bucket, id))
+                .map(blob -> Resource.with(
+                        blob.getContent(),
+                        blob.getCrc32cToHexString(),
+                        blob.getContentType(),
+                        blob.getName()));
     }
 
     @Override
@@ -53,6 +52,9 @@ public class GCStorageService implements StorageService {
 
     @Override
     public void deleteAll(final List<String> ids) {
+        if (ids == null || ids.isEmpty())
+            return;
+
         final var blobs = ids.stream()
                 .map(id -> BlobId.of(this.bucket, id))
                 .toList();
