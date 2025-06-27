@@ -1,11 +1,11 @@
 package com.cap.admin.catalogo.domain.exceptions;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.cap.admin.catalogo.domain.AggregateRoot;
 import com.cap.admin.catalogo.domain.Identifier;
 import com.cap.admin.catalogo.domain.validation.Error;
-
-import java.util.Collections;
-import java.util.List;
 
 public class NotFoundException extends DomainException {
 
@@ -20,5 +20,9 @@ public class NotFoundException extends DomainException {
                 anAggregate.getSimpleName(),
                 id.getValue());
         return new NotFoundException(anError, Collections.emptyList());
+    }
+
+    public static NotFoundException with(final Error error) {
+        return new NotFoundException(error.message(), List.of(error));
     }
 }

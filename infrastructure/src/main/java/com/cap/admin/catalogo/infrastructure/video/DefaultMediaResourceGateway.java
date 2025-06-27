@@ -1,5 +1,7 @@
 package com.cap.admin.catalogo.infrastructure.video;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import com.cap.admin.catalogo.domain.resource.Resource;
@@ -63,5 +65,11 @@ public class DefaultMediaResourceGateway implements MediaResourceGateway {
 
     private void store(final String filepath, final Resource aResource) {
         this.storageService.store(filepath, aResource);
+    }
+
+    @Override
+    public Optional<Resource> getResource(VideoID anId, VideoMediaType type) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getResource'");
     }
 }
