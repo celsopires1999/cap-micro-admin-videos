@@ -171,7 +171,7 @@ public class VideoTest {
                 final var aVideoMedia = AudioVideoMedia.with("abc", "Video.mp4", "/123/videos");
 
                 // when
-                final var actualVideo = Video.with(aVideo).setVideo(aVideoMedia);
+                final var actualVideo = Video.with(aVideo).updateVideoMedia(aVideoMedia);
 
                 // then
                 Assertions.assertNotNull(actualVideo);
@@ -231,7 +231,7 @@ public class VideoTest {
                 final var aTrailerMedia = AudioVideoMedia.with("abc", "Trailer.mp4", "/123/videos");
 
                 // when
-                final var actualVideo = Video.with(aVideo).setTrailer(aTrailerMedia);
+                final var actualVideo = Video.with(aVideo).updateTrailerMedia(aTrailerMedia);
 
                 // then
                 Assertions.assertNotNull(actualVideo);
@@ -291,7 +291,7 @@ public class VideoTest {
                 final var aBannerMedia = ImageMedia.with("abc", "Trailer.mp4", "/123/videos");
 
                 // when
-                final var actualVideo = Video.with(aVideo).setBanner(aBannerMedia);
+                final var actualVideo = Video.with(aVideo).updateBannerMedia(aBannerMedia);
 
                 // then
                 Assertions.assertNotNull(actualVideo);
@@ -351,7 +351,7 @@ public class VideoTest {
                 final var aThumbMedia = ImageMedia.with("abc", "Trailer.mp4", "/123/videos");
 
                 // when
-                final var actualVideo = Video.with(aVideo).setThumbnail(aThumbMedia);
+                final var actualVideo = Video.with(aVideo).updateThumbnailMedia(aThumbMedia);
 
                 // then
                 Assertions.assertNotNull(actualVideo);
@@ -411,7 +411,7 @@ public class VideoTest {
                 final var aThumbMedia = ImageMedia.with("abc", "Trailer.mp4", "/123/videos");
 
                 // when
-                final var actualVideo = Video.with(aVideo).setThumbnailHalf(aThumbMedia);
+                final var actualVideo = Video.with(aVideo).updateThumbnailHalfMedia(aThumbMedia);
 
                 // then
                 Assertions.assertNotNull(actualVideo);
