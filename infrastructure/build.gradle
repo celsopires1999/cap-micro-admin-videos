@@ -46,6 +46,7 @@ dependencies {
     }
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-amqp')
 
     implementation('com.fasterxml.jackson.module:jackson-module-afterburner')
 
@@ -54,6 +55,7 @@ dependencies {
     testImplementation('org.flywaydb:flyway-core')
     testImplementation('org.flywaydb:flyway-mysql')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.amqp:spring-rabbit-test:3.2.5')
 
     // testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation ('net.datafaker:datafaker:2.4.3')
