@@ -1,28 +1,39 @@
 package com.cap.admin.catalogo.infrastructure.video;
 
-import com.cap.admin.catalogo.domain.Identifier;
-import com.cap.admin.catalogo.domain.pagination.Pagination;
-import com.cap.admin.catalogo.domain.video.*;
-import com.cap.admin.catalogo.infrastructure.utils.SqlUtils;
-import com.cap.admin.catalogo.infrastructure.video.persistence.VideoJpaEntity;
-import com.cap.admin.catalogo.infrastructure.video.persistence.VideoRepository;
+import static com.cap.admin.catalogo.domain.utils.CollectionUtils.mapTo;
+import static com.cap.admin.catalogo.domain.utils.CollectionUtils.nullIfEmpty;
+
+import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-import java.util.Optional;
-
-import static com.cap.admin.catalogo.domain.utils.CollectionUtils.mapTo;
-import static com.cap.admin.catalogo.domain.utils.CollectionUtils.nullIfEmpty;
+import com.cap.admin.catalogo.domain.Identifier;
+import com.cap.admin.catalogo.domain.pagination.Pagination;
+import com.cap.admin.catalogo.domain.video.Video;
+import com.cap.admin.catalogo.domain.video.VideoGateway;
+import com.cap.admin.catalogo.domain.video.VideoID;
+import com.cap.admin.catalogo.domain.video.VideoPreview;
+import com.cap.admin.catalogo.domain.video.VideoSearchQuery;
+import com.cap.admin.catalogo.infrastructure.configuration.annotations.VideoCreatedQueue;
+import com.cap.admin.catalogo.infrastructure.services.EventService;
+import com.cap.admin.catalogo.infrastructure.utils.SqlUtils;
+import com.cap.admin.catalogo.infrastructure.video.persistence.VideoJpaEntity;
+import com.cap.admin.catalogo.infrastructure.video.persistence.VideoRepository;
 
 @Component
 public class DefaultVideoGateway implements VideoGateway {
 
+    private final EventService eventService;
     private final VideoRepository videoRepository;
 
-    public DefaultVideoGateway(final VideoRepository videoRepository) {
+    public DefaultVideoGateway(
+            @VideoCreatedQueue final EventService eventService,
+            final VideoRepository videoRepository) {
+        this.eventService = Objects.requireNonNull(eventService);
         this.videoRepository = Objects.requireNonNull(videoRepository);
     }
 
@@ -75,7 +86,11 @@ public class DefaultVideoGateway implements VideoGateway {
     }
 
     private Video save(final Video aVideo) {
-        return this.videoRepository.save(VideoJpaEntity.from(aVideo))
+        final var result = this.videoRepository.save(VideoJpaEntity.from(aVideo))
                 .toAggregate();
+
+        aVideo.publishDomainEvents(this.eventService::send);
+
+        return result;
     }
 }
