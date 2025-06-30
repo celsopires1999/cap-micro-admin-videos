@@ -1,6 +1,6 @@
 package com.cap.admin.catalogo.domain.events;
 
 @FunctionalInterface
-public interface DomainEventPublisher<T extends DomainEvent> {
-    void publishEvent(T event);
+public interface DomainEventPublisher {
+    void publishEvent(DomainEvent event);
 }
