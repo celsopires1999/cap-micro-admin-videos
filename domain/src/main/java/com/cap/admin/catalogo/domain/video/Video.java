@@ -1,5 +1,13 @@
 package com.cap.admin.catalogo.domain.video;
 
+import java.time.Instant;
+import java.time.Year;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import com.cap.admin.catalogo.domain.AggregateRoot;
 import com.cap.admin.catalogo.domain.castmember.CastMemberID;
 import com.cap.admin.catalogo.domain.category.CategoryID;
@@ -7,10 +15,6 @@ import com.cap.admin.catalogo.domain.events.DomainEvent;
 import com.cap.admin.catalogo.domain.genre.GenreID;
 import com.cap.admin.catalogo.domain.utils.InstantUtils;
 import com.cap.admin.catalogo.domain.validation.ValidationHandler;
-
-import java.time.Instant;
-import java.time.Year;
-import java.util.*;
 
 public class Video extends AggregateRoot<VideoID> {
 
@@ -128,12 +132,14 @@ public class Video extends AggregateRoot<VideoID> {
     public Video updateTrailerMedia(final AudioVideoMedia trailer) {
         this.trailer = trailer;
         this.updatedAt = InstantUtils.now();
+        onAudioVideoMediaUpdated(trailer);
         return this;
     }
 
     public Video updateVideoMedia(final AudioVideoMedia video) {
         this.video = video;
         this.updatedAt = InstantUtils.now();
+        onAudioVideoMediaUpdated(video);
         return this;
     }
 
@@ -338,5 +344,11 @@ public class Video extends AggregateRoot<VideoID> {
         }
 
         return this;
+    }
+
+    private void onAudioVideoMediaUpdated(final AudioVideoMedia media) {
+        if (media != null && media.isPendingEncode()) {
+            this.registerEvent(new VideoMediaCreated(getId().getValue(), media.rawLocation()));
+        }
     }
 }

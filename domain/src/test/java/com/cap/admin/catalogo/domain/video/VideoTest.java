@@ -22,7 +22,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.fullcycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -80,7 +80,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.fullcycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -148,14 +148,14 @@ public class VideoTest {
         }
 
         @Test
-        public void givenValidVideo_whenCallsSetVideo_shouldReturnUpdated() {
+        public void givenValidVideo_whenCallsUpdateVideoMedia_shouldReturnUpdated() {
                 // given
                 final var expectedTitle = "System Design Interviews";
                 final var expectedDescription = """
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.fullcycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -165,6 +165,7 @@ public class VideoTest {
                 final var expectedCategories = Set.of(CategoryID.unique());
                 final var expectedGenres = Set.of(GenreID.unique());
                 final var expectedMembers = Set.of(CastMemberID.unique());
+                final var expectedDomainEventSize = 1;
 
                 final var aVideo = Video.newVideo(
                                 expectedTitle,
@@ -204,18 +205,25 @@ public class VideoTest {
                 Assertions.assertTrue(actualVideo.getThumbnail().isEmpty());
                 Assertions.assertTrue(actualVideo.getThumbnailHalf().isEmpty());
 
+                Assertions.assertEquals(expectedDomainEventSize, actualVideo.getDomainEvents().size());
+
+                final var actualEvent = (VideoMediaCreated) actualVideo.getDomainEvents().get(0);
+                Assertions.assertEquals(aVideo.getId().getValue(), actualEvent.resourceId());
+                Assertions.assertEquals(aVideoMedia.rawLocation(), actualEvent.filePath());
+                Assertions.assertNotNull(actualEvent.occurredOn());
+
                 Assertions.assertDoesNotThrow(() -> actualVideo.validate(new ThrowsValidationHandler()));
         }
 
         @Test
-        public void givenValidVideo_whenCallsSetTrailer_shouldReturnUpdated() {
+        public void givenValidVideo_whenCallsUpdateTrailerMedia_shouldReturnUpdated() {
                 // given
                 final var expectedTitle = "System Design Interviews";
                 final var expectedDescription = """
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.fullcycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -225,6 +233,7 @@ public class VideoTest {
                 final var expectedCategories = Set.of(CategoryID.unique());
                 final var expectedGenres = Set.of(GenreID.unique());
                 final var expectedMembers = Set.of(CastMemberID.unique());
+                final var expectedDomainEventSize = 1;
 
                 final var aVideo = Video.newVideo(
                                 expectedTitle,
@@ -264,18 +273,25 @@ public class VideoTest {
                 Assertions.assertTrue(actualVideo.getThumbnail().isEmpty());
                 Assertions.assertTrue(actualVideo.getThumbnailHalf().isEmpty());
 
+                Assertions.assertEquals(expectedDomainEventSize, actualVideo.getDomainEvents().size());
+
+                final var actualEvent = (VideoMediaCreated) actualVideo.getDomainEvents().get(0);
+                Assertions.assertEquals(aVideo.getId().getValue(), actualEvent.resourceId());
+                Assertions.assertEquals(aTrailerMedia.rawLocation(), actualEvent.filePath());
+                Assertions.assertNotNull(actualEvent.occurredOn());
+
                 Assertions.assertDoesNotThrow(() -> actualVideo.validate(new ThrowsValidationHandler()));
         }
 
         @Test
-        public void givenValidVideo_whenCallsSetBanner_shouldReturnUpdated() {
+        public void givenValidVideo_whenCallsUpdateBannerMedia_shouldReturnUpdated() {
                 // given
                 final var expectedTitle = "System Design Interviews";
                 final var expectedDescription = """
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.fullcycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -328,14 +344,14 @@ public class VideoTest {
         }
 
         @Test
-        public void givenValidVideo_whenCallsSetThumbnail_shouldReturnUpdated() {
+        public void givenValidVideo_whenCallsUpdateThumbnailMedia_shouldReturnUpdated() {
                 // given
                 final var expectedTitle = "System Design Interviews";
                 final var expectedDescription = """
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.fullcycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -388,14 +404,14 @@ public class VideoTest {
         }
 
         @Test
-        public void givenValidVideo_whenCallsSetThumbnailHalf_shouldReturnUpdated() {
+        public void givenValidVideo_whenCallsUpdateThumbnailHalfMedia_shouldReturnUpdated() {
                 // given
                 final var expectedTitle = "System Design Interviews";
                 final var expectedDescription = """
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.fullcycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;
@@ -455,7 +471,7 @@ public class VideoTest {
                                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
                                 Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
                                 Para acessar todas as aulas, lives e desafios, acesse:
-                                https://imersao.cap.com.br/
+                                https://imersao.fullcycle.com.br/
                                 """;
                 final var expectedLaunchedAt = Year.of(2022);
                 final var expectedDuration = 120.10;

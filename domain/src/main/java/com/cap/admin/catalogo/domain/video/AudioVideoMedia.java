@@ -1,9 +1,9 @@
 package com.cap.admin.catalogo.domain.video;
 
+import java.util.Objects;
+
 import com.cap.admin.catalogo.domain.ValueObject;
 import com.cap.admin.catalogo.domain.utils.IdUtils;
-
-import java.util.Objects;
 
 public class AudioVideoMedia extends ValueObject {
 
@@ -103,5 +103,9 @@ public class AudioVideoMedia extends ValueObject {
                 rawLocation(),
                 encodedPath,
                 MediaStatus.COMPLETED);
+    }
+
+    public boolean isPendingEncode() {
+        return MediaStatus.PENDING == this.status;
     }
 }
