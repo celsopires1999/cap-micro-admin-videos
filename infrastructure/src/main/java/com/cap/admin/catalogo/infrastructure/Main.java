@@ -1,6 +1,5 @@
 package com.cap.admin.catalogo.infrastructure;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.AbstractEnvironment;
@@ -15,10 +14,4 @@ public class Main {
                 "development");
         SpringApplication.run(WebServerConfig.class, args);
     }
-
-    @RabbitListener(queues = "video.encoded.queue")
-    void dummy() {
-
-    }
-
 }
