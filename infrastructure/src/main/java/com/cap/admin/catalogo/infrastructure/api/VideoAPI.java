@@ -110,4 +110,27 @@ public interface VideoAPI {
             @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
     })
     void deleteById(@PathVariable(name = "id") String id);
+
+    @GetMapping(value = "{id}/medias/{type}")
+    @Operation(summary = "Get a video media by it's type")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Media retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Media was not found"),
+            @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+    })
+    ResponseEntity<byte[]> getMediaByType(
+            @PathVariable(name = "id") String id,
+            @PathVariable(name = "type") String type);
+
+    @PostMapping(value = "{id}/medias/{type}")
+    @Operation(summary = "Upload a video media by it's type")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Media created successfully"),
+            @ApiResponse(responseCode = "404", description = "Video was not found"),
+            @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+    })
+    ResponseEntity<?> uploadMediaByType(
+            @PathVariable(name = "id") String id,
+            @PathVariable(name = "type") String type,
+            @RequestParam(name = "media_file") MultipartFile media);
 }
