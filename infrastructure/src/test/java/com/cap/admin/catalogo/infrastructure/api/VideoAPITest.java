@@ -57,6 +57,7 @@ import com.cap.admin.catalogo.application.video.update.UpdateVideoUseCase;
 import com.cap.admin.catalogo.domain.Fixture;
 import com.cap.admin.catalogo.domain.castmember.CastMemberID;
 import com.cap.admin.catalogo.domain.category.CategoryID;
+import com.cap.admin.catalogo.domain.exceptions.NotFoundException;
 import com.cap.admin.catalogo.domain.exceptions.NotificationException;
 import com.cap.admin.catalogo.domain.genre.GenreID;
 import com.cap.admin.catalogo.domain.pagination.Pagination;
@@ -119,17 +120,14 @@ public class VideoAPITest {
         final var expectedGenres = Set.of(tech.getId().getValue());
         final var expectedMembers = Set.of(wesley.getId().getValue());
 
-        final var expectedVideo = new MockMultipartFile("video_file", "video.mp4", "video/mp4",
-                "VIDEO".getBytes());
+        final var expectedVideo = new MockMultipartFile("video_file", "video.mp4", "video/mp4", "VIDEO".getBytes());
 
         final var expectedTrailer = new MockMultipartFile("trailer_file", "trailer.mp4", "video/mp4",
                 "TRAILER".getBytes());
 
-        final var expectedBanner = new MockMultipartFile("banner_file", "banner.jpg", "image/jpg",
-                "BANNER".getBytes());
+        final var expectedBanner = new MockMultipartFile("banner_file", "banner.jpg", "image/jpg", "BANNER".getBytes());
 
-        final var expectedThumb = new MockMultipartFile("thumb_file", "thumbnail.jpg", "image/jpg",
-                "THUMB".getBytes());
+        final var expectedThumb = new MockMultipartFile("thumb_file", "thumbnail.jpg", "image/jpg", "THUMB".getBytes());
 
         final var expectedThumbHalf = new MockMultipartFile("thumb_half_file", "thumbnailHalf.jpg", "image/jpg",
                 "THUMBHALF".getBytes());
@@ -184,8 +182,28 @@ public class VideoAPITest {
         Assertions.assertEquals(expectedTrailer.getOriginalFilename(), actualCmd.getTrailer().get().name());
         Assertions.assertEquals(expectedBanner.getOriginalFilename(), actualCmd.getBanner().get().name());
         Assertions.assertEquals(expectedThumb.getOriginalFilename(), actualCmd.getThumbnail().get().name());
-        Assertions.assertEquals(expectedThumbHalf.getOriginalFilename(),
-                actualCmd.getThumbnailHalf().get().name());
+        Assertions.assertEquals(expectedThumbHalf.getOriginalFilename(), actualCmd.getThumbnailHalf().get().name());
+    }
+
+    @Test
+    public void givenAnInvalidCommand_whenCallsCreateFull_shouldReturnError() throws Exception {
+        // given
+        final var expectedErrorMessage = "title is required";
+
+        when(createVideoUseCase.execute(any()))
+                .thenThrow(NotificationException.with(new Error(expectedErrorMessage)));
+
+        // when
+        final var aRequest = multipart("/videos")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isUnprocessableEntity())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
     }
 
     @Test
@@ -257,6 +275,45 @@ public class VideoAPITest {
         Assertions.assertTrue(actualCmd.getBanner().isEmpty());
         Assertions.assertTrue(actualCmd.getThumbnail().isEmpty());
         Assertions.assertTrue(actualCmd.getThumbnailHalf().isEmpty());
+    }
+
+    @Test
+    public void givenAnEmptyBody_whenCallsCreatePartial_shouldReturnError() throws Exception {
+        // when
+        final var aRequest = post("/videos")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenAnInvalidCommand_whenCallsCreatePartial_shouldReturnError() throws Exception {
+        // given
+        final var expectedErrorMessage = "title is required";
+
+        when(createVideoUseCase.execute(any()))
+                .thenThrow(NotificationException.with(new Error(expectedErrorMessage)));
+
+        // when
+        final var aRequest = post("/videos")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                          "title": "Olá Mundo!"
+                        }
+                        """);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isUnprocessableEntity())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
     }
 
     @Test
@@ -340,19 +397,38 @@ public class VideoAPITest {
                 .andExpect(jsonPath("$.video.name", equalTo(expectedVideo.name())))
                 .andExpect(jsonPath("$.video.checksum", equalTo(expectedVideo.checksum())))
                 .andExpect(jsonPath("$.video.location", equalTo(expectedVideo.rawLocation())))
-                .andExpect(jsonPath("$.video.encoded_location",
-                        equalTo(expectedVideo.encodedLocation())))
+                .andExpect(jsonPath("$.video.encoded_location", equalTo(expectedVideo.encodedLocation())))
                 .andExpect(jsonPath("$.video.status", equalTo(expectedVideo.status().name())))
                 .andExpect(jsonPath("$.trailer.id", equalTo(expectedTrailer.id())))
                 .andExpect(jsonPath("$.trailer.name", equalTo(expectedTrailer.name())))
                 .andExpect(jsonPath("$.trailer.checksum", equalTo(expectedTrailer.checksum())))
                 .andExpect(jsonPath("$.trailer.location", equalTo(expectedTrailer.rawLocation())))
-                .andExpect(jsonPath("$.trailer.encoded_location",
-                        equalTo(expectedTrailer.encodedLocation())))
+                .andExpect(jsonPath("$.trailer.encoded_location", equalTo(expectedTrailer.encodedLocation())))
                 .andExpect(jsonPath("$.trailer.status", equalTo(expectedTrailer.status().name())))
                 .andExpect(jsonPath("$.categories_id", equalTo(new ArrayList(expectedCategories))))
                 .andExpect(jsonPath("$.genres_id", equalTo(new ArrayList(expectedGenres))))
                 .andExpect(jsonPath("$.cast_members_id", equalTo(new ArrayList(expectedMembers))));
+    }
+
+    @Test
+    public void givenAnInvalidId_whenCallsGetById_shouldReturnNotFound() throws Exception {
+        // given
+        final var expectedId = VideoID.unique();
+        final var expectedErrorMessage = "Video with ID %s was not found".formatted(expectedId.getValue());
+
+        when(getVideoByIdUseCase.execute(any()))
+                .thenThrow(NotFoundException.with(Video.class, expectedId));
+
+        // when
+        final var aRequest = get("/videos/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isNotFound())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
     }
 
     @Test
@@ -520,8 +596,7 @@ public class VideoAPITest {
         final var expectedItems = List.of(VideoListOutput.from(aVideo));
 
         when(listVideosUseCase.execute(any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal,
-                        expectedItems));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
 
         // when
         final var aRequest = get("/videos")
@@ -574,9 +649,6 @@ public class VideoAPITest {
         final var expectedTerms = "";
         final var expectedSort = "title";
         final var expectedDirection = "asc";
-        final var expectedCastMembers = "";
-        final var expectedGenres = "";
-        final var expectedCategories = "";
 
         final var expectedItemsCount = 1;
         final var expectedTotal = 1;
@@ -584,8 +656,7 @@ public class VideoAPITest {
         final var expectedItems = List.of(VideoListOutput.from(aVideo));
 
         when(listVideosUseCase.execute(any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal,
-                        expectedItems));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
 
         // when
         final var aRequest = get("/videos")
@@ -641,10 +712,9 @@ public class VideoAPITest {
         // then
         response.andExpect(status().isOk())
                 .andExpect(header().string(CONTENT_TYPE, expectedMedia.contentType()))
-                .andExpect(header().string(CONTENT_LENGTH,
-                        String.valueOf(expectedMedia.content().length)))
-                .andExpect(header().string(CONTENT_DISPOSITION,
-                        "attachment; filename=%s".formatted(expectedMedia.name())))
+                .andExpect(header().string(CONTENT_LENGTH, String.valueOf(expectedMedia.content().length)))
+                .andExpect(
+                        header().string(CONTENT_DISPOSITION, "attachment; filename=%s".formatted(expectedMedia.name())))
                 .andExpect(content().bytes(expectedMedia.content()));
 
         final var captor = ArgumentCaptor.forClass(GetMediaCommand.class);
@@ -680,8 +750,7 @@ public class VideoAPITest {
         // then
         response.andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION,
-                        "/videos/%s/medias/%s".formatted(expectedId.getValue(),
-                                expectedType.name())))
+                        "/videos/%s/medias/%s".formatted(expectedId.getValue(), expectedType.name())))
                 .andExpect(header().string(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.video_id", equalTo(expectedId.getValue())))
                 .andExpect(jsonPath("$.media_type", equalTo(expectedType.name())));
@@ -694,8 +763,7 @@ public class VideoAPITest {
         Assertions.assertEquals(expectedId.getValue(), actualCmd.videoId());
         Assertions.assertEquals(expectedResource.content(), actualCmd.videoResource().resource().content());
         Assertions.assertEquals(expectedResource.name(), actualCmd.videoResource().resource().name());
-        Assertions.assertEquals(expectedResource.contentType(),
-                actualCmd.videoResource().resource().contentType());
+        Assertions.assertEquals(expectedResource.contentType(), actualCmd.videoResource().resource().contentType());
         Assertions.assertEquals(expectedType, actualCmd.videoResource().type());
     }
 

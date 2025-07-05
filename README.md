@@ -18,6 +18,13 @@ export $(grep -v '^#' .env | xargs) && ./gradlew bootRun
 export $(grep -v '^#' .env | xargs) && ./gradlew bootRun --debug-jvm
 ``` 
 
+3. Essa é outra opção:
+```shell
+GOOGLE_CLOUD_CREDENTIALS=A \
+  GOOGLE_CLOUD_PROJECT=A \
+  ./gradlew bootRun
+``` 
+
 > Também é possível executar como uma aplicação Java através do
 > método main() na classe Main.java
 
