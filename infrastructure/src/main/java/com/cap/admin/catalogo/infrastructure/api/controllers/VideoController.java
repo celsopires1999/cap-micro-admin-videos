@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cap.admin.catalogo.application.video.create.CreateVideoCommand;
 import com.cap.admin.catalogo.application.video.create.CreateVideoUseCase;
+import com.cap.admin.catalogo.application.video.delete.DeleteVideoUseCase;
 import com.cap.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase;
 import com.cap.admin.catalogo.application.video.update.UpdateVideoCommand;
 import com.cap.admin.catalogo.application.video.update.UpdateVideoUseCase;
@@ -27,14 +28,17 @@ public class VideoController implements VideoAPI {
     private final CreateVideoUseCase createVideoUseCase;
     private final GetVideoByIdUseCase getVideoByIdUseCase;
     private final UpdateVideoUseCase updateVideoUseCase;
+    private final DeleteVideoUseCase deleteVideoUseCase;
 
     public VideoController(
             final CreateVideoUseCase createVideoUseCase,
             final GetVideoByIdUseCase getVideoByIdUseCase,
-            final UpdateVideoUseCase updateVideoUseCase) {
+            final UpdateVideoUseCase updateVideoUseCase,
+            final DeleteVideoUseCase deleteVideoUseCase) {
         this.createVideoUseCase = Objects.requireNonNull(createVideoUseCase);
         this.getVideoByIdUseCase = Objects.requireNonNull(getVideoByIdUseCase);
         this.updateVideoUseCase = Objects.requireNonNull(updateVideoUseCase);
+        this.deleteVideoUseCase = Objects.requireNonNull(deleteVideoUseCase);
     }
 
     @Override
@@ -120,6 +124,11 @@ public class VideoController implements VideoAPI {
         return ResponseEntity.ok()
                 .location(URI.create("/videos/" + output.id()))
                 .body(VideoApiPresenter.present(output));
+    }
+
+    @Override
+    public void deleteById(final String id) {
+        this.deleteVideoUseCase.execute(id);
     }
 
     private Resource resourceOf(final MultipartFile part) {

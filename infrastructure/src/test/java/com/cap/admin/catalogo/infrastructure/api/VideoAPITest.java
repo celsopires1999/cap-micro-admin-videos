@@ -1,36 +1,11 @@
 package com.cap.admin.catalogo.infrastructure.api;
 
-import static com.cap.admin.catalogo.domain.utils.CollectionUtils.mapTo;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.Year;
-import java.util.ArrayList;
-import java.util.Set;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cap.admin.catalogo.ControllerTest;
 import com.cap.admin.catalogo.application.video.create.CreateVideoCommand;
 import com.cap.admin.catalogo.application.video.create.CreateVideoOutput;
 import com.cap.admin.catalogo.application.video.create.CreateVideoUseCase;
+import com.cap.admin.catalogo.application.video.delete.DeleteVideoUseCase;
 import com.cap.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase;
 import com.cap.admin.catalogo.application.video.retrieve.get.VideoOutput;
 import com.cap.admin.catalogo.application.video.update.UpdateVideoCommand;
@@ -47,7 +22,27 @@ import com.cap.admin.catalogo.domain.video.VideoID;
 import com.cap.admin.catalogo.domain.video.VideoMediaType;
 import com.cap.admin.catalogo.infrastructure.video.models.CreateVideoRequest;
 import com.cap.admin.catalogo.infrastructure.video.models.UpdateVideoRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.Set;
+
+import static com.cap.admin.catalogo.domain.utils.CollectionUtils.mapTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ControllerTest(controllers = VideoAPI.class)
 public class VideoAPITest {
@@ -66,6 +61,9 @@ public class VideoAPITest {
 
     @MockitoBean
     private UpdateVideoUseCase updateVideoUseCase;
+
+    @MockitoBean
+    private DeleteVideoUseCase deleteVideoUseCase;
 
     @Test
     public void givenAValidCommand_whenCallsCreateFull_shouldReturnAnId() throws Exception {
@@ -447,5 +445,23 @@ public class VideoAPITest {
                 .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
 
         verify(updateVideoUseCase).execute(any());
+    }
+
+    @Test
+    public void givenAValidId_whenCallsDeleteById_shouldDeleteIt() throws Exception {
+        // given
+        final var expectedId = VideoID.unique();
+
+        doNothing().when(deleteVideoUseCase).execute(any());
+
+        // when
+        final var aRequest = delete("/videos/{id}", expectedId.getValue());
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isNoContent());
+
+        verify(deleteVideoUseCase).execute(eq(expectedId.getValue()));
     }
 }
