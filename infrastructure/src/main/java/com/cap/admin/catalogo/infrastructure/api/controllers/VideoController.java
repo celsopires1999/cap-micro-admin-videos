@@ -11,10 +11,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cap.admin.catalogo.application.video.create.CreateVideoCommand;
 import com.cap.admin.catalogo.application.video.create.CreateVideoUseCase;
 import com.cap.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase;
+import com.cap.admin.catalogo.application.video.update.UpdateVideoCommand;
+import com.cap.admin.catalogo.application.video.update.UpdateVideoUseCase;
 import com.cap.admin.catalogo.domain.resource.Resource;
 import com.cap.admin.catalogo.infrastructure.api.VideoAPI;
 import com.cap.admin.catalogo.infrastructure.utils.HashingUtils;
 import com.cap.admin.catalogo.infrastructure.video.models.CreateVideoRequest;
+import com.cap.admin.catalogo.infrastructure.video.models.UpdateVideoRequest;
 import com.cap.admin.catalogo.infrastructure.video.models.VideoResponse;
 import com.cap.admin.catalogo.infrastructure.video.presenters.VideoApiPresenter;
 
@@ -23,12 +26,15 @@ public class VideoController implements VideoAPI {
 
     private final CreateVideoUseCase createVideoUseCase;
     private final GetVideoByIdUseCase getVideoByIdUseCase;
+    private final UpdateVideoUseCase updateVideoUseCase;
 
     public VideoController(
             final CreateVideoUseCase createVideoUseCase,
-            final GetVideoByIdUseCase getVideoByIdUseCase) {
+            final GetVideoByIdUseCase getVideoByIdUseCase,
+            final UpdateVideoUseCase updateVideoUseCase) {
         this.createVideoUseCase = Objects.requireNonNull(createVideoUseCase);
         this.getVideoByIdUseCase = Objects.requireNonNull(getVideoByIdUseCase);
+        this.updateVideoUseCase = Objects.requireNonNull(updateVideoUseCase);
     }
 
     @Override
@@ -92,6 +98,28 @@ public class VideoController implements VideoAPI {
     @Override
     public VideoResponse getById(final String anId) {
         return VideoApiPresenter.present(this.getVideoByIdUseCase.execute(anId));
+    }
+
+    @Override
+    public ResponseEntity<?> update(final String id, final UpdateVideoRequest payload) {
+        final var aCmd = UpdateVideoCommand.with(
+                id,
+                payload.title(),
+                payload.description(),
+                payload.yearLaunched(),
+                payload.duration(),
+                payload.opened(),
+                payload.published(),
+                payload.rating(),
+                payload.categories(),
+                payload.genres(),
+                payload.castMembers());
+
+        final var output = this.updateVideoUseCase.execute(aCmd);
+
+        return ResponseEntity.ok()
+                .location(URI.create("/videos/" + output.id()))
+                .body(VideoApiPresenter.present(output));
     }
 
     private Resource resourceOf(final MultipartFile part) {

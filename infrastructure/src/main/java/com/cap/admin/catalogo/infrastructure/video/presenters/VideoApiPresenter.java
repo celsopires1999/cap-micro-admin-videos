@@ -1,10 +1,12 @@
 package com.cap.admin.catalogo.infrastructure.video.presenters;
 
 import com.cap.admin.catalogo.application.video.retrieve.get.VideoOutput;
+import com.cap.admin.catalogo.application.video.update.UpdateVideoOutput;
 import com.cap.admin.catalogo.domain.video.AudioVideoMedia;
 import com.cap.admin.catalogo.domain.video.ImageMedia;
 import com.cap.admin.catalogo.infrastructure.video.models.AudioVideoMediaResponse;
 import com.cap.admin.catalogo.infrastructure.video.models.ImageMediaResponse;
+import com.cap.admin.catalogo.infrastructure.video.models.UpdateVideoResponse;
 import com.cap.admin.catalogo.infrastructure.video.models.VideoResponse;
 
 public interface VideoApiPresenter {
@@ -53,5 +55,9 @@ public interface VideoApiPresenter {
                 image.checksum(),
                 image.name(),
                 image.location());
+    }
+
+    static UpdateVideoResponse present(final UpdateVideoOutput output) {
+        return new UpdateVideoResponse(output.id());
     }
 }
