@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.cap.admin.catalogo.ControllerTest;
 import com.cap.admin.catalogo.application.video.create.CreateVideoCommand;
@@ -34,9 +33,6 @@ public class VideoAPITest {
 
     @Autowired
     private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper mapper;
 
     @MockitoBean
     private CreateVideoUseCase createVideoUseCase;
@@ -118,10 +114,10 @@ public class VideoAPITest {
         Assertions.assertEquals(expectedCategories, actualCmd.categories());
         Assertions.assertEquals(expectedGenres, actualCmd.genres());
         Assertions.assertEquals(expectedMembers, actualCmd.members());
-        Assertions.assertEquals(expectedVideo.getName(), actualCmd.getVideo().get().name());
-        Assertions.assertEquals(expectedTrailer.getName(), actualCmd.getTrailer().get().name());
-        Assertions.assertEquals(expectedBanner.getName(), actualCmd.getBanner().get().name());
-        Assertions.assertEquals(expectedThumb.getName(), actualCmd.getThumbnail().get().name());
-        Assertions.assertEquals(expectedThumbHalf.getName(), actualCmd.getThumbnailHalf().get().name());
+        Assertions.assertEquals(expectedVideo.getOriginalFilename(), actualCmd.getVideo().get().name());
+        Assertions.assertEquals(expectedTrailer.getOriginalFilename(), actualCmd.getTrailer().get().name());
+        Assertions.assertEquals(expectedBanner.getOriginalFilename(), actualCmd.getBanner().get().name());
+        Assertions.assertEquals(expectedThumb.getOriginalFilename(), actualCmd.getThumbnail().get().name());
+        Assertions.assertEquals(expectedThumbHalf.getOriginalFilename(), actualCmd.getThumbnailHalf().get().name());
     }
 }
