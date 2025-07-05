@@ -28,6 +28,7 @@ import com.cap.admin.catalogo.application.video.create.CreateVideoOutput;
 import com.cap.admin.catalogo.application.video.create.CreateVideoUseCase;
 import com.cap.admin.catalogo.domain.Fixture;
 import com.cap.admin.catalogo.domain.video.VideoID;
+import com.cap.admin.catalogo.infrastructure.video.models.CreateVideoRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ControllerTest(controllers = VideoAPI.class)
@@ -61,17 +62,14 @@ public class VideoAPITest {
         final var expectedGenres = Set.of(tech.getId().getValue());
         final var expectedMembers = Set.of(wesley.getId().getValue());
 
-        final var expectedVideo = new MockMultipartFile("video_file", "video.mp4", "video/mp4",
-                "VIDEO".getBytes());
+        final var expectedVideo = new MockMultipartFile("video_file", "video.mp4", "video/mp4", "VIDEO".getBytes());
 
         final var expectedTrailer = new MockMultipartFile("trailer_file", "trailer.mp4", "video/mp4",
                 "TRAILER".getBytes());
 
-        final var expectedBanner = new MockMultipartFile("banner_file", "banner.jpg", "image/jpg",
-                "BANNER".getBytes());
+        final var expectedBanner = new MockMultipartFile("banner_file", "banner.jpg", "image/jpg", "BANNER".getBytes());
 
-        final var expectedThumb = new MockMultipartFile("thumb_file", "thumbnail.jpg", "image/jpg",
-                "THUMB".getBytes());
+        final var expectedThumb = new MockMultipartFile("thumb_file", "thumbnail.jpg", "image/jpg", "THUMB".getBytes());
 
         final var expectedThumbHalf = new MockMultipartFile("thumb_half_file", "thumbnailHalf.jpg", "image/jpg",
                 "THUMBHALF".getBytes());
@@ -126,8 +124,7 @@ public class VideoAPITest {
         Assertions.assertEquals(expectedTrailer.getOriginalFilename(), actualCmd.getTrailer().get().name());
         Assertions.assertEquals(expectedBanner.getOriginalFilename(), actualCmd.getBanner().get().name());
         Assertions.assertEquals(expectedThumb.getOriginalFilename(), actualCmd.getThumbnail().get().name());
-        Assertions.assertEquals(expectedThumbHalf.getOriginalFilename(),
-                actualCmd.getThumbnailHalf().get().name());
+        Assertions.assertEquals(expectedThumbHalf.getOriginalFilename(), actualCmd.getThumbnailHalf().get().name());
     }
 
     @Test

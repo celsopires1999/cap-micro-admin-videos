@@ -5,6 +5,7 @@ import com.cap.admin.catalogo.application.video.create.CreateVideoUseCase;
 import com.cap.admin.catalogo.domain.resource.Resource;
 import com.cap.admin.catalogo.infrastructure.api.VideoAPI;
 import com.cap.admin.catalogo.infrastructure.utils.HashingUtils;
+import com.cap.admin.catalogo.infrastructure.video.models.CreateVideoRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,6 +56,25 @@ public class VideoController implements VideoAPI {
                 resourceOf(bannerFile),
                 resourceOf(thumbFile),
                 resourceOf(thumbHalfFile));
+
+        final var output = this.createVideoUseCase.execute(aCmd);
+
+        return ResponseEntity.created(URI.create("/videos/" + output.id())).body(output);
+    }
+
+    @Override
+    public ResponseEntity<?> createPartial(final CreateVideoRequest payload) {
+        final var aCmd = CreateVideoCommand.with(
+                payload.title(),
+                payload.description(),
+                payload.yearLaunched(),
+                payload.duration(),
+                payload.opened(),
+                payload.published(),
+                payload.rating(),
+                payload.categories(),
+                payload.genres(),
+                payload.castMembers());
 
         final var output = this.createVideoUseCase.execute(aCmd);
 
