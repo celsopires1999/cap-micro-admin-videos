@@ -1,6 +1,36 @@
 package com.cap.admin.catalogo.infrastructure.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.cap.admin.catalogo.domain.utils.CollectionUtils.mapTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
 import com.cap.admin.catalogo.ControllerTest;
 import com.cap.admin.catalogo.application.video.create.CreateVideoCommand;
 import com.cap.admin.catalogo.application.video.create.CreateVideoOutput;
@@ -8,6 +38,8 @@ import com.cap.admin.catalogo.application.video.create.CreateVideoUseCase;
 import com.cap.admin.catalogo.application.video.delete.DeleteVideoUseCase;
 import com.cap.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase;
 import com.cap.admin.catalogo.application.video.retrieve.get.VideoOutput;
+import com.cap.admin.catalogo.application.video.retrieve.list.ListVideosUseCase;
+import com.cap.admin.catalogo.application.video.retrieve.list.VideoListOutput;
 import com.cap.admin.catalogo.application.video.update.UpdateVideoCommand;
 import com.cap.admin.catalogo.application.video.update.UpdateVideoOutput;
 import com.cap.admin.catalogo.application.video.update.UpdateVideoUseCase;
@@ -16,33 +48,16 @@ import com.cap.admin.catalogo.domain.castmember.CastMemberID;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.domain.exceptions.NotificationException;
 import com.cap.admin.catalogo.domain.genre.GenreID;
+import com.cap.admin.catalogo.domain.pagination.Pagination;
 import com.cap.admin.catalogo.domain.validation.Error;
 import com.cap.admin.catalogo.domain.video.Video;
 import com.cap.admin.catalogo.domain.video.VideoID;
 import com.cap.admin.catalogo.domain.video.VideoMediaType;
+import com.cap.admin.catalogo.domain.video.VideoPreview;
+import com.cap.admin.catalogo.domain.video.VideoSearchQuery;
 import com.cap.admin.catalogo.infrastructure.video.models.CreateVideoRequest;
 import com.cap.admin.catalogo.infrastructure.video.models.UpdateVideoRequest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.Year;
-import java.util.ArrayList;
-import java.util.Set;
-
-import static com.cap.admin.catalogo.domain.utils.CollectionUtils.mapTo;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ControllerTest(controllers = VideoAPI.class)
 public class VideoAPITest {
@@ -65,6 +80,9 @@ public class VideoAPITest {
     @MockitoBean
     private DeleteVideoUseCase deleteVideoUseCase;
 
+    @MockitoBean
+    private ListVideosUseCase listVideosUseCase;
+
     @Test
     public void givenAValidCommand_whenCallsCreateFull_shouldReturnAnId() throws Exception {
         // given
@@ -84,17 +102,14 @@ public class VideoAPITest {
         final var expectedGenres = Set.of(tech.getId().getValue());
         final var expectedMembers = Set.of(wesley.getId().getValue());
 
-        final var expectedVideo = new MockMultipartFile("video_file", "video.mp4", "video/mp4",
-                "VIDEO".getBytes());
+        final var expectedVideo = new MockMultipartFile("video_file", "video.mp4", "video/mp4", "VIDEO".getBytes());
 
         final var expectedTrailer = new MockMultipartFile("trailer_file", "trailer.mp4", "video/mp4",
                 "TRAILER".getBytes());
 
-        final var expectedBanner = new MockMultipartFile("banner_file", "banner.jpg", "image/jpg",
-                "BANNER".getBytes());
+        final var expectedBanner = new MockMultipartFile("banner_file", "banner.jpg", "image/jpg", "BANNER".getBytes());
 
-        final var expectedThumb = new MockMultipartFile("thumb_file", "thumbnail.jpg", "image/jpg",
-                "THUMB".getBytes());
+        final var expectedThumb = new MockMultipartFile("thumb_file", "thumbnail.jpg", "image/jpg", "THUMB".getBytes());
 
         final var expectedThumbHalf = new MockMultipartFile("thumb_half_file", "thumbnailHalf.jpg", "image/jpg",
                 "THUMBHALF".getBytes());
@@ -149,8 +164,7 @@ public class VideoAPITest {
         Assertions.assertEquals(expectedTrailer.getOriginalFilename(), actualCmd.getTrailer().get().name());
         Assertions.assertEquals(expectedBanner.getOriginalFilename(), actualCmd.getBanner().get().name());
         Assertions.assertEquals(expectedThumb.getOriginalFilename(), actualCmd.getThumbnail().get().name());
-        Assertions.assertEquals(expectedThumbHalf.getOriginalFilename(),
-                actualCmd.getThumbnailHalf().get().name());
+        Assertions.assertEquals(expectedThumbHalf.getOriginalFilename(), actualCmd.getThumbnailHalf().get().name());
     }
 
     @Test
@@ -305,15 +319,13 @@ public class VideoAPITest {
                 .andExpect(jsonPath("$.video.name", equalTo(expectedVideo.name())))
                 .andExpect(jsonPath("$.video.checksum", equalTo(expectedVideo.checksum())))
                 .andExpect(jsonPath("$.video.location", equalTo(expectedVideo.rawLocation())))
-                .andExpect(jsonPath("$.video.encoded_location",
-                        equalTo(expectedVideo.encodedLocation())))
+                .andExpect(jsonPath("$.video.encoded_location", equalTo(expectedVideo.encodedLocation())))
                 .andExpect(jsonPath("$.video.status", equalTo(expectedVideo.status().name())))
                 .andExpect(jsonPath("$.trailer.id", equalTo(expectedTrailer.id())))
                 .andExpect(jsonPath("$.trailer.name", equalTo(expectedTrailer.name())))
                 .andExpect(jsonPath("$.trailer.checksum", equalTo(expectedTrailer.checksum())))
                 .andExpect(jsonPath("$.trailer.location", equalTo(expectedTrailer.rawLocation())))
-                .andExpect(jsonPath("$.trailer.encoded_location",
-                        equalTo(expectedTrailer.encodedLocation())))
+                .andExpect(jsonPath("$.trailer.encoded_location", equalTo(expectedTrailer.encodedLocation())))
                 .andExpect(jsonPath("$.trailer.status", equalTo(expectedTrailer.status().name())))
                 .andExpect(jsonPath("$.categories_id", equalTo(new ArrayList(expectedCategories))))
                 .andExpect(jsonPath("$.genres_id", equalTo(new ArrayList(expectedGenres))))
@@ -463,5 +475,120 @@ public class VideoAPITest {
         response.andExpect(status().isNoContent());
 
         verify(deleteVideoUseCase).execute(eq(expectedId.getValue()));
+    }
+
+    @Test
+    public void givenValidParams_whenCallsListVideos_shouldReturnPagination() throws Exception {
+        // given
+        final var aVideo = new VideoPreview(Fixture.video());
+
+        final var expectedPage = 50;
+        final var expectedPerPage = 50;
+        final var expectedTerms = "Algo";
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
+        final var expectedCastMembers = "cast1";
+        final var expectedGenres = "gen1";
+        final var expectedCategories = "cat1";
+
+        final var expectedItemsCount = 1;
+        final var expectedTotal = 1;
+
+        final var expectedItems = List.of(VideoListOutput.from(aVideo));
+
+        when(listVideosUseCase.execute(any()))
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
+
+        // when
+        final var aRequest = get("/videos")
+                .queryParam("page", String.valueOf(expectedPage))
+                .queryParam("perPage", String.valueOf(expectedPerPage))
+                .queryParam("sort", expectedSort)
+                .queryParam("dir", expectedDirection)
+                .queryParam("search", expectedTerms)
+                .queryParam("cast_members_ids", expectedCastMembers)
+                .queryParam("categories_ids", expectedCategories)
+                .queryParam("genres_ids", expectedGenres)
+                .accept(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
+                .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
+                .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
+                .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(aVideo.id())))
+                .andExpect(jsonPath("$.items[0].title", equalTo(aVideo.title())))
+                .andExpect(jsonPath("$.items[0].description", equalTo(aVideo.description())))
+                .andExpect(jsonPath("$.items[0].created_at", equalTo(aVideo.createdAt().toString())))
+                .andExpect(jsonPath("$.items[0].updated_at", equalTo(aVideo.updatedAt().toString())));
+
+        final var captor = ArgumentCaptor.forClass(VideoSearchQuery.class);
+
+        verify(listVideosUseCase).execute(captor.capture());
+
+        final var actualQuery = captor.getValue();
+        Assertions.assertEquals(expectedPage, actualQuery.page());
+        Assertions.assertEquals(expectedPerPage, actualQuery.perPage());
+        Assertions.assertEquals(expectedDirection, actualQuery.direction());
+        Assertions.assertEquals(expectedSort, actualQuery.sort());
+        Assertions.assertEquals(expectedTerms, actualQuery.terms());
+        Assertions.assertEquals(Set.of(CategoryID.from(expectedCategories)), actualQuery.categories());
+        Assertions.assertEquals(Set.of(CastMemberID.from(expectedCastMembers)), actualQuery.castMembers());
+        Assertions.assertEquals(Set.of(GenreID.from(expectedGenres)), actualQuery.genres());
+    }
+
+    @Test
+    public void givenEmptyParams_whenCallsListVideosWithDefaultValues_shouldReturnPagination() throws Exception {
+        // given
+        final var aVideo = new VideoPreview(Fixture.video());
+
+        final var expectedPage = 0;
+        final var expectedPerPage = 25;
+        final var expectedTerms = "";
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
+
+        final var expectedItemsCount = 1;
+        final var expectedTotal = 1;
+
+        final var expectedItems = List.of(VideoListOutput.from(aVideo));
+
+        when(listVideosUseCase.execute(any()))
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
+
+        // when
+        final var aRequest = get("/videos")
+                .accept(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
+                .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
+                .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
+                .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(aVideo.id())))
+                .andExpect(jsonPath("$.items[0].title", equalTo(aVideo.title())))
+                .andExpect(jsonPath("$.items[0].description", equalTo(aVideo.description())))
+                .andExpect(jsonPath("$.items[0].created_at", equalTo(aVideo.createdAt().toString())))
+                .andExpect(jsonPath("$.items[0].updated_at", equalTo(aVideo.updatedAt().toString())));
+
+        final var captor = ArgumentCaptor.forClass(VideoSearchQuery.class);
+
+        verify(listVideosUseCase).execute(captor.capture());
+
+        final var actualQuery = captor.getValue();
+        Assertions.assertEquals(expectedPage, actualQuery.page());
+        Assertions.assertEquals(expectedPerPage, actualQuery.perPage());
+        Assertions.assertEquals(expectedDirection, actualQuery.direction());
+        Assertions.assertEquals(expectedSort, actualQuery.sort());
+        Assertions.assertEquals(expectedTerms, actualQuery.terms());
+        Assertions.assertTrue(actualQuery.categories().isEmpty());
+        Assertions.assertTrue(actualQuery.castMembers().isEmpty());
+        Assertions.assertTrue(actualQuery.genres().isEmpty());
     }
 }
