@@ -405,9 +405,9 @@ public class VideoAPITest {
                 .andExpect(jsonPath("$.trailer.location", equalTo(expectedTrailer.rawLocation())))
                 .andExpect(jsonPath("$.trailer.encoded_location", equalTo(expectedTrailer.encodedLocation())))
                 .andExpect(jsonPath("$.trailer.status", equalTo(expectedTrailer.status().name())))
-                .andExpect(jsonPath("$.categories_id", equalTo(new ArrayList(expectedCategories))))
-                .andExpect(jsonPath("$.genres_id", equalTo(new ArrayList(expectedGenres))))
-                .andExpect(jsonPath("$.cast_members_id", equalTo(new ArrayList(expectedMembers))));
+                .andExpect(jsonPath("$.categories_id", equalTo(new ArrayList<String>(expectedCategories))))
+                .andExpect(jsonPath("$.genres_id", equalTo(new ArrayList<String>(expectedGenres))))
+                .andExpect(jsonPath("$.cast_members_id", equalTo(new ArrayList<String>(expectedMembers))));
     }
 
     @Test

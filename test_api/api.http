@@ -1,0 +1,299 @@
+## valid uuid = b8ee6449-b662-4245-9f12-430dfb74df6c
+@jwtToken = xxx
+
+@baseUrl = http://localhost:8080/api
+
+###
+####################### Category ################### 
+###
+# @name createCategory
+POST {{baseUrl}}/categories HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Category 1",
+    "description": "Description 1"
+}
+
+###
+
+@categoryId = {{createCategory.response.body.id}}
+
+###
+GET {{baseUrl}}/categories HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+GET {{baseUrl}}/categories/{{categoryId}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+# @name updateCategory
+PUT {{baseUrl}}/categories/{{categoryId}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Category 1 Updated",
+    "description": "Description 1 Updated",
+    "is_active": true
+}
+
+
+###
+# @name deleteCategory
+DELETE {{baseUrl}}/categories/{{categoryId}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+####################### Genre ################### 
+###
+
+# @name create
+POST {{baseUrl}}/genres HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Genre 1",
+    "categories_id": [
+       "{{categoryId}}"
+    ]
+}
+
+@genreId = {{create.response.body.id}}
+
+###
+GET {{baseUrl}}/genres HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+GET {{baseUrl}}/genres/{{genreId}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+# @name updateGenre
+PUT {{baseUrl}}/genres/{{genreId}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Genre 1 Updated",
+    "is_active": true
+}
+
+###
+# @name deleteGenre
+DELETE {{baseUrl}}/genres/{{genreId}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+####################### Cast Member ################### 
+###
+
+# @name createCastMember
+POST {{baseUrl}}/cast_members HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "John Doe",
+    "type": "DIRECTOR" 
+}
+
+@castMemberId = {{createCastMember.response.body.id}}
+
+###
+GET {{baseUrl}}/cast_members HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+GET {{baseUrl}}/cast_members/{{castMemberId}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+# @name updateGenre
+PUT  {{baseUrl}}/cast_members/{{castMemberId}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "John Doe",
+    "type": "ACTOR"
+}
+
+###
+# @name deleteCastMember
+DELETE {{baseUrl}}/cast_members/{{castMemberId}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+####################### Video ################### 
+###
+
+###
+# @name createVideo
+POST {{baseUrl}}/videos
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "title": "Video 1",
+    "description": "Description 1",
+    "year_launched": 2020,
+    "opened": false,
+    "published": false,
+    "rating": "L",
+    "duration": 90,
+    "categories": [
+        "{{categoryId}}"
+    ],
+    "genres": [
+        "{{genreId}}"
+    ],
+    "cast_members": [
+        "{{castMemberId}}"
+    ]
+}
+
+###
+
+@videoId = {{createVideo.response.body.id}}
+
+###
+
+GET {{baseUrl}}/videos/{{videoId}}
+Authorization: Bearer {{jwtToken}}
+
+###
+# @name updateVideo
+PUT {{baseUrl}}/videos/{{videoId}}
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "title": "A volta dos que não foram",
+    "description": "Description A volta dos que não foram - parte 1",
+    "year_launched": 2022,
+    "opened": false,
+    "published": false,
+    "rating": "L",
+    "duration": 90,
+    "categories": [
+        "{{categoryId}}"
+    ],
+    "genres": [
+        "{{genreId}}"
+    ],
+    "cast_members": [
+        "{{castMemberId}}"
+    ]
+}
+
+###
+# @name uploadTHUMBNAIL
+POST {{baseUrl}}/videos/{{videoId}}/medias/THUMBNAIL
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary1234
+Authorization: Bearer {{jwtToken}}
+
+------WebKitFormBoundary1234    
+Content-Disposition: form-data; name="media_file"; filename="team.jpg"
+Content-Type: image/jpg
+
+< ./team.jpg
+------WebKitFormBoundary1234--
+
+###
+# @name uploadBANNER
+POST {{baseUrl}}/videos/{{videoId}}/medias/BANNER
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary1234
+Authorization: Bearer {{jwtToken}}
+
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="media_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234--
+
+
+###
+# @name createVideoWithFiles
+POST {{baseUrl}}/videos
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary1234
+Authorization: Bearer {{jwtToken}}
+
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="title"
+
+A volta dos que não foram
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="description"
+
+Description A volta dos que não foram - parte 1
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="year_launched"
+
+2022
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="opened"
+
+false
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="published"
+
+false
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="rating"
+
+L
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="duration"
+
+90
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="categories_id"
+
+{{categoryId}}
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="genres_id"
+
+{{genreId}}
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="cast_members_id"
+
+{{castMemberId}}
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="video_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="trailer_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="banner_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="thumb_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="thumb_half_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234--
+
+###
+###
+# @name deletevIDEO
+# DELETE {{baseUrl}}/videos/{{genreId}} HTTP/1.1
+DELETE {{baseUrl}}/videos/d5511c70ab0d4147be4a6ed077981446 HTTP/1.1
+Authorization: Bearer {{jwtToken}}
