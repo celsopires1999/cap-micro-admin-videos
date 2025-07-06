@@ -9,6 +9,7 @@ buildscript {
 
 plugins {
     id 'java'
+    id 'java-conventions'
     id 'application'
     id 'org.springframework.boot' version '3.4.4'
     id 'io.spring.dependency-management' version "1.1.7"
@@ -16,15 +17,10 @@ plugins {
 }
 
 group 'com.cap.admin.catalogo.infrastructure'
-version '1.0-SNAPSHOT'
 
 bootJar {
     archiveFileName='application.jar'
     destinationDirectory.set(file("${rootProject.buildDir}/libs"))
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -36,7 +32,6 @@ dependencies {
 
     implementation 'com.mysql:mysql-connector-j'
 
-    // implementation ('com.google.cloud:google-cloud-storage:2.53.1') 
     implementation(libs.cloudstorage)
     implementation(libs.guava) 
     implementation 'com.google.protobuf:protobuf-java:4.31.1'
@@ -57,8 +52,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('org.springframework.amqp:spring-rabbit-test:3.2.5')
 
-    // testImplementation 'com.github.javafaker:javafaker:1.0.2'
-    testImplementation ('net.datafaker:datafaker:2.4.3')
+    // testImplementation ('net.datafaker:datafaker:2.4.3')
 
     testImplementation('org.testcontainers:testcontainers:1.21.0')
     testImplementation('org.testcontainers:mysql:1.21.0')
@@ -73,17 +67,9 @@ flyway {
      password = System.getenv('FLYWAY_PASS') ?: '123456'
 }
 
-test {
-    useJUnitPlatform()
-}
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
-}
-
-tasks.named('test') {
-    // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
 }

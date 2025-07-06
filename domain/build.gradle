@@ -1,23 +1,12 @@
 plugins {
-    id 'java'
+    id 'java-conventions'
+    id 'java-library'
 }
 
 group 'com.cap.admin.catalogo.domain'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
-    implementation libs.vavr
-    testImplementation libs.junit.jupiter
     testImplementation 'net.datafaker:datafaker:2.4.3'
-    testRuntimeOnly libs.junit.jupiter
-}
-
-test {
-    useJUnitPlatform()
 }
 
 configurations {
@@ -39,9 +28,4 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
-}
-
-tasks.named('test') {
-    // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
 }

@@ -4,6 +4,138 @@
 @baseUrl = http://localhost:8080/api
 
 ###
+####################### Validation ################### 
+###
+
+# @name validationCategory
+POST {{baseUrl}}/categories HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Category 1",
+    "description": "Description 1"
+}
+
+###
+# @name validationGenre
+POST {{baseUrl}}/genres HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Genre 1",
+    "categories_id": [
+       "{{validationCategory.response.body.id}}"
+    ]
+}
+
+###
+# @name validationCastMember
+POST {{baseUrl}}/cast_members HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "John Doe",
+    "type": "DIRECTOR" 
+}
+
+###
+# @name validationVideoWithFiles
+POST {{baseUrl}}/videos
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary1234
+Authorization: Bearer {{jwtToken}}
+
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="title"
+
+A volta dos que não foram
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="description"
+
+Description A volta dos que não foram - parte 1
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="year_launched"
+
+2022
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="opened"
+
+false
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="published"
+
+false
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="rating"
+
+L
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="duration"
+
+90
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="categories_id"
+
+{{validationCategory.response.body.id}}
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="genres_id"
+
+{{validationGenre.response.body.id}}
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="cast_members_id"
+
+{{validationCastMember.response.body.id}}
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="video_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="trailer_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="banner_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="thumb_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="thumb_half_file"; filename="team.jpg"
+Content-Type: image/jpeg
+
+< ./team.jpg
+------WebKitFormBoundary1234--
+
+###
+# @name validationDeleteVideo
+DELETE {{baseUrl}}/videos/{{validationVideoWithFiles.response.body.id}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+# @name validationDeleteGenre
+DELETE {{baseUrl}}/genres/{{validationGenre.response.body.id}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+# @name validationDeleteCategory
+DELETE {{baseUrl}}/categories/{{validationCategory.response.body.id}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+###
+# @name validationDeleteCastMember
+DELETE {{baseUrl}}/cast_members/{{validationCastMember.response.body.id}} HTTP/1.1
+Authorization: Bearer {{jwtToken}}
+
+
+###
 ####################### Category ################### 
 ###
 # @name createCategory
@@ -50,7 +182,7 @@ Authorization: Bearer {{jwtToken}}
 ####################### Genre ################### 
 ###
 
-# @name create
+# @name createGenre
 POST {{baseUrl}}/genres HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{jwtToken}}
@@ -62,7 +194,7 @@ Authorization: Bearer {{jwtToken}}
     ]
 }
 
-@genreId = {{create.response.body.id}}
+@genreId = {{createGenre.response.body.id}}
 
 ###
 GET {{baseUrl}}/genres HTTP/1.1
@@ -293,7 +425,7 @@ Content-Type: image/jpeg
 
 ###
 ###
-# @name deletevIDEO
+# @name deleteVideo
 # DELETE {{baseUrl}}/videos/{{genreId}} HTTP/1.1
 DELETE {{baseUrl}}/videos/d5511c70ab0d4147be4a6ed077981446 HTTP/1.1
 Authorization: Bearer {{jwtToken}}
