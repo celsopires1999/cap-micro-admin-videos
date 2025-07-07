@@ -1,17 +1,19 @@
 package com.cap.admin.catalogo.domain.video;
 
+import java.time.Year;
+import java.util.Set;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.cap.admin.catalogo.domain.UnitTest;
 import com.cap.admin.catalogo.domain.castmember.CastMemberID;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.domain.exceptions.DomainException;
 import com.cap.admin.catalogo.domain.genre.GenreID;
 import com.cap.admin.catalogo.domain.validation.handler.ThrowsValidationHandler;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
-import java.time.Year;
-import java.util.Set;
-
-public class VideoValidatorTest {
+public class VideoValidatorTest extends UnitTest {
 
         @Test
         public void givenNullTitle_whenCallsValidate_shouldReceiveError() {

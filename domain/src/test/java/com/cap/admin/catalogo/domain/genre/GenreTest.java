@@ -1,14 +1,16 @@
 package com.cap.admin.catalogo.domain.genre;
 
-import com.cap.admin.catalogo.domain.category.CategoryID;
-import com.cap.admin.catalogo.domain.exceptions.NotificationException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenreTest {
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.cap.admin.catalogo.domain.UnitTest;
+import com.cap.admin.catalogo.domain.category.CategoryID;
+import com.cap.admin.catalogo.domain.exceptions.NotificationException;
+
+public class GenreTest extends UnitTest {
 
     @Test
     public void givenValidParams_whenCallNewGenre_shouldInstantiateAGenre() {

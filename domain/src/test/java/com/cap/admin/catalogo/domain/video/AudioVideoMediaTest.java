@@ -1,10 +1,12 @@
 package com.cap.admin.catalogo.domain.video;
 
-import com.cap.admin.catalogo.domain.utils.IdUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class AudioVideoMediaTest {
+import com.cap.admin.catalogo.domain.UnitTest;
+import com.cap.admin.catalogo.domain.utils.IdUtils;
+
+class AudioVideoMediaTest extends UnitTest {
 
         @Test
         public void givenValidParams_whenCallsNewAudioVideo_ShouldReturnInstance() {

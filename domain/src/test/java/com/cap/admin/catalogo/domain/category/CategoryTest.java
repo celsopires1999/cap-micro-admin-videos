@@ -3,10 +3,11 @@ package com.cap.admin.catalogo.domain.category;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.cap.admin.catalogo.domain.UnitTest;
 import com.cap.admin.catalogo.domain.exceptions.DomainException;
 import com.cap.admin.catalogo.domain.validation.handler.ThrowsValidationHandler;
 
-public class CategoryTest {
+public class CategoryTest extends UnitTest {
 
     @Test
     public void givenAValidParams_whenCallNewCategory_thenInstantiateACategory() {

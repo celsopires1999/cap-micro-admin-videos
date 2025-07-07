@@ -3,7 +3,9 @@ package com.cap.admin.catalogo.domain.video;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ImageMediaTest {
+import com.cap.admin.catalogo.domain.UnitTest;
+
+public class ImageMediaTest extends UnitTest {
 
         @Test
         public void givenValidParams_whenCallsNewImage_ShouldReturnInstance() {

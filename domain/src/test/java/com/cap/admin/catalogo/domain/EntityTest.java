@@ -13,7 +13,7 @@ import com.cap.admin.catalogo.domain.utils.IdUtils;
 import com.cap.admin.catalogo.domain.utils.InstantUtils;
 import com.cap.admin.catalogo.domain.validation.ValidationHandler;
 
-public class EntityTest {
+public class EntityTest extends UnitTest {
 
     @Test
     public void givenNullAsEvents_whenInstantiate_shouldBeOk() {

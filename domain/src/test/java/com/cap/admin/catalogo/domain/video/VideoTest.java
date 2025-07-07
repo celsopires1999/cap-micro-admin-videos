@@ -6,13 +6,14 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.cap.admin.catalogo.domain.UnitTest;
 import com.cap.admin.catalogo.domain.castmember.CastMemberID;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.domain.genre.GenreID;
 import com.cap.admin.catalogo.domain.utils.InstantUtils;
 import com.cap.admin.catalogo.domain.validation.handler.ThrowsValidationHandler;
 
-public class VideoTest {
+public class VideoTest extends UnitTest {
 
         @Test
         public void givenValidParams_whenCallsNewVideo_shouldInstantiate() {
