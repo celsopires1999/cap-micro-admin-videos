@@ -7,23 +7,26 @@
 ## Como executar?
 
 1. Executar as migrações do MySQL com o Flyway:
+
 ```shell
 ./gradlew flywayMigrate
 ```
 
 2. Executar a aplicação como SpringBoot app:
+
 ```shell
 ./gradlew bootRun
 export $(grep -v '^#' .env | xargs) && ./gradlew bootRun
 export $(grep -v '^#' .env | xargs) && ./gradlew bootRun --debug-jvm
-``` 
+```
 
 3. Essa é outra opção:
+
 ```shell
 GOOGLE_CLOUD_CREDENTIALS=A \
   GOOGLE_CLOUD_PROJECT=A \
   ./gradlew bootRun
-``` 
+```
 
 > Também é possível executar como uma aplicação Java através do
 > método main() na classe Main.java
@@ -68,6 +71,7 @@ Quando isso acontecer o flyway ficará em um estado de reparação
 com um registro na tabela `flyway_schema_history` com erro (`sucesso = 0`).
 
 Para executar a reparação, corrija os arquivos e execute:
+
 ```shell
 ./gradlew flywayRepair
 ```
@@ -99,4 +103,28 @@ essas variáveis na hora de executar os comandos, exemplo:
 
 ```shell
 FLYWAY_DB=jdbc:mysql://prod:3306/adm_videos FLYWAY_USER=root FLYWAY_PASS=123h1hu ./gradlew flywayValidate
+```
+
+#### Gerando o artefato produtivo (jar)
+
+Para gerar o artefato produtivo, basta executar o comando:
+
+```
+./gradlew bootJar
+```
+
+#### Executando a aplicação junto dos outros containers
+
+Depois de visualizar que os demais containers estão de pé, para rodar sua aplicação junto basta executar o comando:
+
+```
+docker compose --profile qas up -d
+```
+
+#### Parando os containers
+
+Para parar os containers, basta executar o comando:
+
+```
+docker compose --profile qas stop
 ```

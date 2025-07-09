@@ -13,6 +13,18 @@ services:
         depends_on:
             mysql:
                 condition: service_healthy
+    qas:
+        profiles: ["qas"]
+        build:
+            context: .
+            dockerfile: Dockerfile.qas
+        restart: unless-stopped
+        env_file:
+            - .env.qas
+        ports:
+            - 8081:8080
+        extra_hosts:
+            - host.docker.internal:host-gateway
 
     mysql:
         image: mysql:8.0.30-debian
@@ -23,6 +35,9 @@ services:
             - seccomp:unconfined
         ports:
             - 3306:3306
+        extra_hosts:
+            - host.docker.internal:host-gateway
+        
         healthcheck:
             test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
             interval: 30s
