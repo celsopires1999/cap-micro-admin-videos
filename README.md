@@ -113,18 +113,8 @@ Para gerar o artefato produtivo, basta executar o comando:
 ./gradlew bootJar
 ```
 
-#### Executando a aplicação junto dos outros containers
-
-Depois de visualizar que os demais containers estão de pé, para rodar sua aplicação junto basta executar o comando:
+#### Executando a aplicação no QAS
 
 ```
-docker compose --profile qas up -d
-```
-
-#### Parando os containers
-
-Para parar os containers, basta executar o comando:
-
-```
-docker compose --profile qas stop
+docker compose -f docker-compose.qas.yml up -d
 ```
