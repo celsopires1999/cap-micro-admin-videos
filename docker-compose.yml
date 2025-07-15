@@ -13,7 +13,7 @@ services:
         depends_on:
             mysql:
                 condition: service_healthy
-   
+
     mysql:
         image: mysql:8.0.30-debian
         environment:
@@ -21,11 +21,13 @@ services:
             - MYSQL_DATABASE=adm_videos
         security_opt:
             - seccomp:unconfined
+        volumes:
+            - mysql-data:/var/lib/mysql
+            - ./.docker/init-mysql/create-keycloak-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
         ports:
             - 3306:3306
         extra_hosts:
             - host.docker.internal:host-gateway
-        
         healthcheck:
             test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
             interval: 30s
@@ -44,3 +46,24 @@ services:
             - 5672:5672
         extra_hosts:
             - host.docker.internal:host-gateway
+
+    keycloak:
+        image: quay.io/keycloak/keycloak:22.0.5
+        command: start-dev
+        environment:
+            - KEYCLOAK_ADMIN=admin
+            - KEYCLOAK_ADMIN_PASSWORD=admin
+            - KC_DB=mysql
+            - KC_DB_URL=jdbc:mysql://mysql:3306/keycloak
+            - KC_DB_USERNAME=root
+            - KC_DB_PASSWORD=123456
+        ports:
+            - 8443:8080
+        depends_on:
+            mysql:
+                condition: service_healthy
+        extra_hosts:
+            - host.docker.internal:host-gateway
+
+volumes:
+    mysql-data:
