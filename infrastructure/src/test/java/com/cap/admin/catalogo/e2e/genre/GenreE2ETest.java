@@ -1,5 +1,6 @@
 package com.cap.admin.catalogo.e2e.genre;
 
+import com.cap.admin.catalogo.ApiTest;
 import com.cap.admin.catalogo.E2ETest;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.domain.genre.GenreID;
@@ -217,6 +218,7 @@ public class GenreE2ETest implements MockDsl {
 
                 final var aRequest = get("/genres/123")
                                 .accept(MediaType.APPLICATION_JSON)
+                                .with(ApiTest.ADMIN_JWT)
                                 .contentType(MediaType.APPLICATION_JSON);
 
                 this.mvc.perform(aRequest)

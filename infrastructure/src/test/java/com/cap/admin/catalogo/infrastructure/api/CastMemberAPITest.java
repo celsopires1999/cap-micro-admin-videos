@@ -27,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.cap.admin.catalogo.ApiTest;
 import com.cap.admin.catalogo.ControllerTest;
 import com.cap.admin.catalogo.application.castmember.create.CreateCastMemberOutput;
 import com.cap.admin.catalogo.application.castmember.create.DefaultCreateCastMemberUseCase;
@@ -88,6 +89,7 @@ public class CastMemberAPITest {
         // when
         final var aRequest = post("/cast_members")
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .content(mapper.writeValueAsString(aCommand));
 
         final var response = this.mvc.perform(aRequest)
@@ -119,6 +121,7 @@ public class CastMemberAPITest {
 
         // when
         final var aRequest = post("/cast_members")
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(aCommand));
 
@@ -151,6 +154,7 @@ public class CastMemberAPITest {
 
         // when
         final var aRequest = get("/cast_members/{id}", expectedId)
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .accept(MediaType.APPLICATION_JSON);
 
         final var response = this.mvc.perform(aRequest);
@@ -178,6 +182,7 @@ public class CastMemberAPITest {
 
         // when
         final var aRequest = get("/cast_members/{id}", expectedId.getValue())
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .accept(MediaType.APPLICATION_JSON);
 
         final var response = this.mvc.perform(aRequest);
@@ -206,6 +211,7 @@ public class CastMemberAPITest {
 
         // when
         final var aRequest = put("/cast_members/{id}", expectedId.getValue())
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(aCommand));
 
@@ -241,6 +247,7 @@ public class CastMemberAPITest {
 
         // when
         final var aRequest = put("/cast_members/{id}", expectedId.getValue())
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(aCommand));
 
@@ -277,6 +284,7 @@ public class CastMemberAPITest {
 
         // when
         final var aRequest = put("/cast_members/{id}", expectedId.getValue())
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(aCommand));
 
@@ -304,7 +312,8 @@ public class CastMemberAPITest {
                 .when(deleteCastMemberUseCase).execute(any());
 
         // when
-        final var aRequest = delete("/cast_members/{id}", expectedId);
+        final var aRequest = delete("/cast_members/{id}", expectedId)
+                .with(ApiTest.CAST_MEMBERS_JWT);
 
         final var response = this.mvc.perform(aRequest);
 
@@ -341,6 +350,7 @@ public class CastMemberAPITest {
                 .queryParam("search", expectedTerms)
                 .queryParam("sort", expectedSort)
                 .queryParam("dir", expectedDirection)
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .accept(MediaType.APPLICATION_JSON);
 
         final var response = this.mvc.perform(aRequest);
@@ -386,6 +396,7 @@ public class CastMemberAPITest {
 
         // when
         final var aRequest = get("/cast_members")
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .accept(MediaType.APPLICATION_JSON);
 
         final var response = this.mvc.perform(aRequest);

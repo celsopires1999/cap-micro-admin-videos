@@ -1,5 +1,6 @@
 package com.cap.admin.catalogo.e2e.category;
 
+import com.cap.admin.catalogo.ApiTest;
 import com.cap.admin.catalogo.E2ETest;
 import com.cap.admin.catalogo.domain.category.CategoryID;
 import com.cap.admin.catalogo.e2e.MockDsl;
@@ -181,6 +182,7 @@ public class CategoryE2ETest implements MockDsl {
 
         final var aRequest = get("/categories/123")
                 .accept(MediaType.APPLICATION_JSON)
+                .with(ApiTest.ADMIN_JWT)
                 .contentType(MediaType.APPLICATION_JSON);
 
         this.mvc.perform(aRequest)
