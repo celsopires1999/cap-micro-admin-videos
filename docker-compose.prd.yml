@@ -1,9 +1,9 @@
 services:
     prd:
-        image: celsopires/cap-micro-admin-videos:modulos_29-ci-cd-1
+        image: celsopires/cap-micro-admin-videos:main-5
         restart: unless-stopped
         env_file:
-            - .env.qas
+            - .env.prd
         ports:
             - 8081:8080
         extra_hosts:
@@ -19,6 +19,8 @@ services:
             - MYSQL_DATABASE=adm_videos
         security_opt:
             - seccomp:unconfined
+        volumes:
+            - mysql-data:/var/lib/mysql
         ports:
             - 3306:3306
         extra_hosts:
@@ -42,3 +44,25 @@ services:
             - 5672:5672
         extra_hosts:
             - host.docker.internal:host-gateway
+
+    keycloak:
+        image: quay.io/keycloak/keycloak:22.0.5
+        command: 
+            - start-dev --http-port=8443 --hostname-url=http://host.docker.internal:8443
+        environment:
+            - KEYCLOAK_ADMIN=admin
+            - KEYCLOAK_ADMIN_PASSWORD=admin
+            - KC_DB=mysql
+            - KC_DB_URL=jdbc:mysql://mysql:3306/keycloak
+            - KC_DB_USERNAME=root
+            - KC_DB_PASSWORD=123456
+        ports:
+            - 8443:8443
+        depends_on:
+            mysql:
+                condition: service_healthy
+        extra_hosts:
+            - host.docker.internal:host-gateway
+
+volumes:
+    mysql-data:

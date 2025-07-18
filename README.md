@@ -1,3 +1,7 @@
+# FC3-micro-videos-java
+
+Esse microsserviço é parte do projeto prático do curso Full Cycle 3.0
+
 ## Ferramentas necessárias
 
 - JDK 21
@@ -113,8 +117,48 @@ Para gerar o artefato produtivo, basta executar o comando:
 ./gradlew bootJar
 ```
 
-#### Executando a aplicação no QAS
+#### Executando a aplicação no Sandbox
 
 ```
-docker compose -f docker-compose.qas.yml up -d
+docker compose -f docker-compose.sandbox.yml up -d
 ```
+
+#### Executando a aplicação com a imagem de Produção
+
+```
+docker compose -f docker-compose.prd.yml up -d
+```
+
+### Keycloak
+
+#### Setup
+
+1. Subir o container e navegar ate `http://host.docker.internal:8443/`
+2. Criar um realm novo para o projeto: `fc3-codeflix`
+3. Navegar ate Realm settings > General > Endpoints
+   - Esses endpoints são importantes para fazer-mos a integração
+4. Navegar ate Realm settings > Keys
+   - Iremos utilizar a chave publica do algoritmo RS256 para verificar o token
+5. Criar o client:
+   - Client Id: fc3-admin-catalogo-de-videos
+   - Client authentication: ON -- isso faz acesso confidential
+   - Redirect URL: confidential
+   - Comentar das credentials `client and secret` que usaremos para login manual
+6. Criar a role:
+   - Role: catalogo-admin
+   - Description: Role que dá permissão de admin para os usuários
+7. Criar um group:
+   - Name: catalogo-admin
+   - Role mapping: assign `catalogo-admin`
+8. Criar um usuario:
+   - Nome: myuser
+   - Groups: adicionar ao `catalogo-admin`
+   - Criar um credentials: `123456`
+9. Criar o client para o frontend:
+
+- Client Id: react-auth
+- Client authentication: OFF -- isso faz acesso publico
+- Root URL: `http://localhost:3000`
+- Valid redirect URIs: `http://localhost:3000/*` -- É necessário o /\*
+- Web origins: `http://localhost:3000` -- Essa propriedade evita bloqueio de CORS
+- Realm Settings -> Security Defenses -> Content-Security-Policy: `frame-src 'self'; frame-ancestors 'self' http://localhost:3000;`

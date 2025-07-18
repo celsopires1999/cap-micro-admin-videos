@@ -1,17 +1,23 @@
-@keycloakUrl =http://keycloak:8080
+# @keycloakUrl =http://keycloak:8080
+@keycloakUrl =http://host.docker.internal:8443
 @realmName = fc3-codeflix
+
+###
+# Keycloak endpoints
+# @name getKeycloakRealm
+GET {{keycloakUrl}}/realms/{{realmName}}/.well-known/openid-configuration HTTP/1.1
 
 ###
 # @name getJwtToken
 POST {{keycloakUrl}}/realms/{{realmName}}/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=password&client_id=fc3-admin-do-catalogo&client_secret=Afe9JIL8yj2vLyvM2RMpHsYG4HE2TLwK&username=marydoe&password=123456
+grant_type=password&client_id=fc3-admin-do-catalogo&client_secret=Afe9JIL8yj2vLyvM2RMpHsYG4HE2TLwK&username=johndoe&password=123456
 
 ###
 @jwtToken = {{getJwtToken.response.body.access_token}}
 
-@baseUrl = http://localhost:8080/api
+@baseUrl = http://host.docker.internal:8081/api
 
 ###
 ####################### Validation ################### 
