@@ -1,14 +1,14 @@
-amqp:
-  admin:
-    auto-create: true
-  host: rabbit
-  port: 5672
-  username: adm_videos
-  password: 123456
+# amqp:
+#   admin:
+#     auto-create: true
+#   host: rabbit
+#   port: 5672
+#   username: adm_videos
+#   password: 123456
 
-keycloak:
-  realm: fc3-codeflix
-  host: http://localhost:8443
+# keycloak:
+#   realm: fc3-codeflix
+#   host: http://localhost:8443
 
 mysql:
   username: root
@@ -16,9 +16,16 @@ mysql:
   schema: adm_videos
   url: mysql:3306
 
-server:
-  port: 8080
-  undertow:
-    threads:
-      worker: 10
-      io: 2
+# server:
+#   port: 8080
+#   undertow:
+#     threads:
+#       worker: 10
+#       io: 2
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
